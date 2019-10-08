@@ -1,0 +1,5 @@
+/venv_*
+/.idea
+/tmp.py
+*.pyc
+*.log
