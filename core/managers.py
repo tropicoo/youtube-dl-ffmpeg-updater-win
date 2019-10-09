@@ -10,11 +10,11 @@ class UpdaterProcessManager:
 
     def __init__(self):
         self._log = logging.getLogger(self.__class__.__name__)
-        self._log.debug('Initializing %s', self.__class__.__name__)
+        self._log.debug('Initializing %r', self)
         self._procs = (FFUpdaterProcess, YTDLUpdaterProcess)
         self._jobs = []
 
-    def start_update_processes(self, dest, platform, force):
+    def start_processes(self, dest, platform, force):
         """Start Updater Processes."""
         for i in range(len(self._procs)):
             proc = self._procs[i](dest=dest, platform=platform, force=force)

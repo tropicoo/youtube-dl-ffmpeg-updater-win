@@ -10,7 +10,7 @@ from core.const import REQUIRED_FFBINARIES
 class ZipExtractor:
     def __init__(self):
         self._log = logging.getLogger(self.__class__.__name__)
-        self._log.debug('Initializing %s', self.__class__.__name__)
+        self._log.debug('Initializing %r', self)
 
     def extract(self, zip_file, dest):
         """Extract downloaded ffbinary zip archive."""
@@ -22,5 +22,5 @@ class ZipExtractor:
 
             with zip_file.open(member) as source, \
                     open(os.path.join(dest, filename), 'wb') as target:
-                self._log.debug('Extracting %s to %s', source.name, target.name)
+                self._log.info('Extracting %s to %s', source.name, target.name)
                 shutil.copyfileobj(source, target)

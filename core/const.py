@@ -18,7 +18,7 @@ EXE_YTDL = 'youtube-dl.exe'
 URL_YTDL = f'https://yt-dl.org/latest/{EXE_YTDL}'
 
 REQUIRED_FFBINARIES = ('ffmpeg.exe', 'ffprobe.exe', 'ffplay.exe')
-FFBINARIES_API = 'http://ffbinaries.com/api/v1/version/latest'
+FFBINARIES_API = 'https://ffbinaries.com/api/v1/version/latest'
 FFMPEG_NUM_REGEX = r'(([0-9]+\.?)+)'
 
 PLATFORMS = {'x32': 'windows-32',

@@ -17,7 +17,7 @@ class Updater:
 
     def __init__(self, dest, platform):
         self._log = logging.getLogger(self.__class__.__name__)
-        self._log.debug('Initializing %s', self.__class__.__name__)
+        self._log.debug('Initializing %r', self)
         self._manager = UpdaterProcessManager()
         self._destination = dest
         self._platform = platform
@@ -28,9 +28,9 @@ class Updater:
         self._check_path_existence()
         if force:
             self._log.info('Performing force update')
-        self._manager.start_update_processes(dest=self._destination,
-                                             platform=self._platform,
-                                             force=force)
+        self._manager.start_processes(dest=self._destination,
+                                      platform=self._platform,
+                                      force=force)
         self._log.info('Update finished')
 
     def _check_path_existence(self):
