@@ -1,5 +1,10 @@
 """Constants Module."""
 
+LOG_MAP = {0: 'ERROR',
+           1: 'WARNING',
+           2: 'INFO',
+           3: 'DEBUG'}
+
 
 class _HTTPMethods:
     """HTTP Methods Class."""

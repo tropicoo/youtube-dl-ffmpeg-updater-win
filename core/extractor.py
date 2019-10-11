@@ -17,10 +17,11 @@ class ZipExtractor:
         for member in zip_file.namelist():
             filename = os.path.basename(member)
             if not filename or filename not in REQUIRED_FFBINARIES:
-                self._log.debug('Skipping %s', member)
+                self._log.debug('[%s] Skipping %s', zip_file.filename, member)
                 continue
 
             with zip_file.open(member) as source, \
                     open(os.path.join(dest, filename), 'wb') as target:
-                self._log.info('Extracting %s to %s', source.name, target.name)
+                self._log.info('[%s] Extracting %s to %s',
+                               zip_file.filename, source.name, target.name)
                 shutil.copyfileobj(source, target)

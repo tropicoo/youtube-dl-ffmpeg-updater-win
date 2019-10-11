@@ -10,8 +10,8 @@ from core.log import init_logging
 
 
 class BaseHTTPClient:
-    def __init__(self):
-        init_logging()
+    def __init__(self, log_level):
+        init_logging(log_level)
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %r', self)
 
@@ -22,14 +22,16 @@ class BaseHTTPClient:
 
 
 class YouTubeDLAPIClient(BaseHTTPClient):
+    def __init__(self, log_level):
+        super().__init__(log_level)
+
     def download_latest_version(self):
         return self._request(url=URL_YTDL, stream=True)
 
 
 class FFBinariesAPIClient(BaseHTTPClient):
-
-    def __init__(self):
-        super().__init__()
+    def __init__(self, log_level):
+        super().__init__(log_level)
         self._proc_lock = Lock()
         self._cache_expire_time = 300
         self._cache_metadata = None
@@ -49,4 +51,4 @@ class FFBinariesAPIClient(BaseHTTPClient):
         # Make only one request and use cached json metadata further.
         with self._proc_lock:
             metadata = self.get_latest_metadata()['bin'][platform]
-        return self._request(url=metadata[component]).content
+        return self._request(url=metadata[component])

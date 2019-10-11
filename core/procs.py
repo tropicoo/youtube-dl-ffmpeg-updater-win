@@ -5,32 +5,29 @@ import multiprocessing
 import os
 import re
 import subprocess
-from io import BytesIO
-from zipfile import ZipFile
 
 from core.api import YouTubeDLAPIClient, FFBinariesAPIClient
 from core.const import (EXE_YTDL, CMD_YOUTUBE_DL_UPDATE, CMD_FFMPEG_VERSION,
-                        REQUIRED_FFBINARIES, CHUNKS_SIZE, FFMPEG_NUM_REGEX)
+                        REQUIRED_FFBINARIES, CHUNKS_SIZE, FFMPEG_NUM_REGEX,
+                        PLATFORMS)
 from core.extractor import ZipExtractor
 from core.log import init_logging
-from core.utils import init_shared_manager
+from core.utils import init_shared_manager, response_to_zip
 
 
 class BaseUpdaterProcess(multiprocessing.Process):
     """Base Updater Process Class."""
 
-    def __init__(self, dest, api_client, platform, force=False):
+    def __init__(self, api_client, settings):
         super().__init__()
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %r', self)
         self._api = api_client
-        self._destination = dest
-        self._platform = platform
-        self._force = force
+        self._settings = settings
 
     def run(self):
         """Main Process Run Method."""
-        init_logging()
+        init_logging(self._settings.log_level)
         self._update()
 
     def _update(self):
@@ -41,95 +38,93 @@ class BaseUpdaterProcess(multiprocessing.Process):
 class YTDLUpdaterProcess(BaseUpdaterProcess):
     """youtube-dl Updater Process Class."""
 
-    def __init__(self, dest, platform, force):
-        super().__init__(dest=dest,
-                         platform=platform,
-                         api_client=YouTubeDLAPIClient(),
-                         force=force)
+    def __init__(self, settings):
+        super().__init__(api_client=YouTubeDLAPIClient(settings.log_level),
+                         settings=settings)
 
     def _update(self):
         """Update youtube-dl."""
         self._log.info('Updating %s', EXE_YTDL)
 
-        if self._force:
-            self._update_through_web()
+        if self._settings.force:
+            self._update_via_web()
             return
 
         try:
-            self._update_through_subprocess()
+            self._update_via_subprocess()
         except FileNotFoundError:
             self._log.info('Local %s build not found, downloading from web',
                            EXE_YTDL)
-            self._update_through_web()
+            self._update_via_web()
 
-    def _update_through_web(self):
+    def _update_via_web(self):
         """Update youtube-dl through the web."""
         stream_obj = self._api.download_latest_version()
-        with open(os.path.join(self._destination, EXE_YTDL), 'wb') as f_out:
+        with open(os.path.join(self._settings.destination, EXE_YTDL), 'wb') as f_out:
             for chunk in stream_obj.iter_content(chunk_size=CHUNKS_SIZE):
                 f_out.write(chunk)
 
-    def _update_through_subprocess(self):
+    def _update_via_subprocess(self):
         """Update youtube-dl by subprocess call."""
         stdout = subprocess.check_output(CMD_YOUTUBE_DL_UPDATE.format(
-            bin_path=os.path.join(self._destination, EXE_YTDL)), text=True).strip()
+            bin_path=os.path.join(self._settings.destination, EXE_YTDL)),
+            text=True).strip()
         self._log.info(stdout)
 
 
-class FFComponentUpdaterProcess(BaseUpdaterProcess):
+class FFCompUpdaterProcess(BaseUpdaterProcess):
     """ffmpeg Component Updater Process Class."""
 
-    def __init__(self, api_client, queue, dest, platform):
-        super().__init__(dest=dest,
-                         platform=platform,
-                         api_client=api_client)
+    def __init__(self, api_client, settings, queue):
+        super().__init__(api_client=api_client,
+                         settings=settings)
         self._queue = queue
         self._extractor = ZipExtractor()
 
     def _update(self):
         while self._queue.qsize() > 0:
-            component_obj = self._api.download_latest_version(
-                platform=self._platform,
+            component_res = self._api.download_latest_version(
+                platform=PLATFORMS[self._settings.platform],
                 component=self._queue.get())
-            zip_archive = ZipFile(BytesIO(component_obj))
-            self._extractor.extract(zip_archive, dest=self._destination)
+            zip_archive = response_to_zip(component_res)
+            self._extractor.extract(zip_archive, dest=self._settings.destination)
 
 
 class FFUpdaterProcess(BaseUpdaterProcess):
     """ffmpeg Updater Process Class."""
 
-    def __init__(self, dest, platform, force):
+    def __init__(self, settings):
         manager = init_shared_manager((FFBinariesAPIClient,))
-        super().__init__(dest=dest,
-                         platform=platform,
-                         api_client=manager.FFBinariesAPIClient(),
-                         force=force)
+        super().__init__(api_client=manager.FFBinariesAPIClient(settings.log_level),
+                         settings=settings)
         self._spawned = []
 
     def _update(self):
         """Update ffmpeg build."""
         self._log.info('Updating ffbinaries')
         if self._need_update():
-            queue = multiprocessing.Manager().Queue()
-            for comp in map(lambda x: x.rsplit('.', 1)[0], REQUIRED_FFBINARIES):
-                queue.put(comp)
-
-            for i in range(len(REQUIRED_FFBINARIES)):
-                proc = FFComponentUpdaterProcess(api_client=self._api,
-                                                 queue=queue,
-                                                 dest=self._destination,
-                                                 platform=self._platform)
-                proc.start()
-                self._spawned.append(proc)
-
-            for proc in self._spawned:
-                proc.join()
+            self._spawn_child_processes()
         else:
             self._log.info('ffbinaries are up-to-date, nothing to update')
 
+    def _spawn_child_processes(self):
+        queue = multiprocessing.Manager().Queue()
+        for comp in map(lambda x: x.rsplit('.', 1)[0], REQUIRED_FFBINARIES):
+            queue.put(comp)
+
+        for i in range(len(REQUIRED_FFBINARIES)):
+            proc = FFCompUpdaterProcess(api_client=self._api,
+                                        queue=queue,
+                                        settings=self._settings)
+            proc.start()
+            self._spawned.append(proc)
+
+        for proc in self._spawned:
+            proc.join()
+
     def _need_update(self):
         """Check if ffbinaries need to be updated."""
-        if self._force or not self._all_ffbinaries_exist():
+        if self._settings.force or not self._all_ffbinaries_exist():
             return True
         latest_version = self._api.get_latest_version()
         local_version = self._get_local_version()
@@ -140,8 +135,8 @@ class FFUpdaterProcess(BaseUpdaterProcess):
         return False
 
     def _all_ffbinaries_exist(self):
-        files = os.listdir(self._destination)
-        return len(set(REQUIRED_FFBINARIES) & set(files)) \
+        files = os.listdir(self._settings.destination)
+        return len(set(files) & set(REQUIRED_FFBINARIES)) \
                == len(REQUIRED_FFBINARIES)
 
     def _get_local_version(self):
@@ -149,7 +144,7 @@ class FFUpdaterProcess(BaseUpdaterProcess):
         ffmpeg_ver = None
         try:
             ffmpeg_ver = subprocess.check_output(CMD_FFMPEG_VERSION.format(
-                bin_path=os.path.join(self._destination, REQUIRED_FFBINARIES[0])),
+                bin_path=os.path.join(self._settings.destination, REQUIRED_FFBINARIES[0])),
                                                  text=True).splitlines()[0]
             ffmpeg_ver = re.search(FFMPEG_NUM_REGEX, ffmpeg_ver).group()
         except FileNotFoundError:
