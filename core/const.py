@@ -26,8 +26,10 @@ REQUIRED_FFBINARIES = ('ffmpeg.exe', 'ffprobe.exe', 'ffplay.exe')
 FFBINARIES_API = 'https://ffbinaries.com/api/v1/version/latest'
 FFMPEG_NUM_REGEX = r'(([0-9]+\.?)+)'
 
-PLATFORMS = {'x32': 'windows-32',
-             'x64': 'windows-64'}
+PLATFORMS = {'x32': {'endpoint': 'windows-32',
+                     'type': 0},
+             'x64': {'endpoint': 'windows-64',
+                     'type': 6}}
 
 CMD_YOUTUBE_DL_UPDATE = '{bin_path} --update'
 CMD_FFMPEG_VERSION = '{bin_path} -version'

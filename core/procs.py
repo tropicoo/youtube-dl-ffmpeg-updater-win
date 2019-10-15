@@ -84,7 +84,7 @@ class FFCompUpdaterProcess(BaseUpdaterProcess):
     def _update(self):
         while self._queue.qsize() > 0:
             component_res = self._api.download_latest_version(
-                platform=PLATFORMS[self._settings.platform],
+                platform=PLATFORMS[self._settings.platform]['endpoint'],
                 component=self._queue.get())
             zip_archive = response_to_zip(component_res)
             self._extractor.extract(zip_archive, dest=self._settings.destination)

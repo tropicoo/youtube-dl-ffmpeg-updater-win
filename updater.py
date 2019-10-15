@@ -22,9 +22,7 @@ class Updater:
 
     def run(self, settings):
         """Start Update."""
-        if settings.force:
-            self._log.info('Performing force update')
-        self._log.info('Starting update')
+        self._log.info('Starting%s update', ' force' if settings.force else '')
         self._check_path_existence(settings.destination)
         self._manager.start_processes(settings)
         self._log.info('Update finished')

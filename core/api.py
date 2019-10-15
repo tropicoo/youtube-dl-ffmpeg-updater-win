@@ -41,7 +41,7 @@ class FFBinariesAPIClient(BaseHTTPClient):
         if self._cache_metadata is None or \
                 time.time() - self._cache_fetch_time > self._cache_expire_time:
             self._cache_metadata = self._request(url=FFBINARIES_API).json()
-            self._cache_fetch_time = time.time()
+            self._cache_fetch_time = int(time.time())
         return self._cache_metadata
 
     def get_latest_version(self):
