@@ -6,7 +6,9 @@ import os
 import re
 import subprocess
 
-from core.api import YouTubeDLAPIClient, FFBinariesAPIClient
+from ffbinaries import FFBinariesAPIClient
+
+from core.api import YouTubeDLAPIClient
 from core.const import (EXE_YTDL, CMD_YOUTUBE_DL_UPDATE, CMD_FFMPEG_VERSION,
                         REQUIRED_FFBINARIES, CHUNKS_SIZE, FFMPEG_NUM_REGEX,
                         PLATFORMS)
@@ -76,8 +78,7 @@ class FFCompUpdaterProcess(BaseUpdaterProcess):
     """ffmpeg Component Updater Process Class."""
 
     def __init__(self, api_client, settings, queue):
-        super().__init__(api_client=api_client,
-                         settings=settings)
+        super().__init__(api_client=api_client, settings=settings)
         self._queue = queue
         self._extractor = ZipExtractor()
 
@@ -95,7 +96,8 @@ class FFUpdaterProcess(BaseUpdaterProcess):
 
     def __init__(self, settings):
         manager = init_shared_manager((FFBinariesAPIClient,))
-        super().__init__(api_client=manager.FFBinariesAPIClient(settings.log_level),
+        super().__init__(api_client=manager.FFBinariesAPIClient(
+            use_caching=True, log_init=(init_logging, settings.log_level)),
                          settings=settings)
         self._spawned = []
 
@@ -144,9 +146,10 @@ class FFUpdaterProcess(BaseUpdaterProcess):
         ffmpeg_ver = None
         try:
             ffmpeg_ver = subprocess.check_output(CMD_FFMPEG_VERSION.format(
-                bin_path=os.path.join(self._settings.destination, REQUIRED_FFBINARIES[0])),
-                                                 text=True).splitlines()[0]
-            ffmpeg_ver = re.search(FFMPEG_NUM_REGEX, ffmpeg_ver).group()
+                bin_path=os.path.join(self._settings.destination,
+                                      REQUIRED_FFBINARIES[0])),
+                text=True).splitlines()[0]
+            ffmpeg_ver = float(re.search(FFMPEG_NUM_REGEX, ffmpeg_ver).group())
         except FileNotFoundError:
             self._log.info('Local ffmpeg build not found, will proceed '
                            'with download')

@@ -55,13 +55,15 @@ LATEST_JSON = {'version': '4.2',
                        'ffplay': 'https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2/ffplay-4.2-osx-64.zip',
                        'ffprobe': 'https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2/ffprobe-4.2-osx-64.zip'}}}
 
+BINARY_CONTENT_DUMMY = b'<binary_content>'
+
 
 def make_response(content_disposition_value):
     res = requests.models.Response()
     res.status_code = STATUS_CODE_OK
-    type(res).content = PropertyMock(return_value=b'<binary_content>')
+    type(res).content = PropertyMock(return_value=BINARY_CONTENT_DUMMY)
     res.headers = {HEADER_CONTENT_DISPOSITION: content_disposition_value,
-                   HEADER_CONTENT_LENGTH: '16'}
+                   HEADER_CONTENT_LENGTH: str(len(BINARY_CONTENT_DUMMY))}
     return res
 
 
