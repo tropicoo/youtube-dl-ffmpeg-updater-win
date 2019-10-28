@@ -149,7 +149,7 @@ class FFUpdaterProcess(BaseUpdaterProcess):
                 bin_path=os.path.join(self._settings.destination,
                                       REQUIRED_FFBINARIES[0])),
                 text=True).splitlines()[0]
-            ffmpeg_ver = float(re.search(FFMPEG_NUM_REGEX, ffmpeg_ver).group())
+            ffmpeg_ver = re.search(FFMPEG_NUM_REGEX, ffmpeg_ver).group()
         except FileNotFoundError:
             self._log.info('Local ffmpeg build not found, will proceed '
                            'with download')
