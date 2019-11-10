@@ -42,13 +42,13 @@ with latest versions.
 
 Requirements
 ------------
-Python 3.6+, requests, ffbinaries-api-client.
+Python 3.7+, requests, ffbinaries-api-client.
 
 Installation
 ------------
 ```
 git clone https://github.com/tropicoo/youtube-dl-ffmpeg-updater-win.git
-pip3 install requests ffbinaries-api-client
+pip3 install -r requirements.txt
 ```
 
 Usage

@@ -15,7 +15,7 @@ class BaseHTTPClient:
 
     def _request(self, url, method=HTTP.GET, stream=False):
         """General Request Method."""
-        self._log.debug('%s %s ', method, url)
+        self._log.debug('%s %s', method, url)
         return requests.request(method=method, url=url, stream=stream)
 
 
