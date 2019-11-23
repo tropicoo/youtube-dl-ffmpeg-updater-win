@@ -9,6 +9,6 @@ def init_logging(log_level):
     """Init logging function.
     Used for new processes that don't have configured `root` logger.
     """
-    log_format = '%(asctime)s %(module)-9s %(processName)-24s %(name)-21s %(funcName)-22s %(levelname)-8s %(message)s'
-    logging.basicConfig(format=log_format, level=LOG_MAP[log_level])
+    level, log_format = LOG_MAP[log_level]
+    logging.basicConfig(format=log_format, level=level)
     logging.getLogger('urllib3').setLevel(logging.WARNING)

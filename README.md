@@ -1,58 +1,57 @@
-youtube-dl and ffmpeg binaries updater for Windows OS
-=====================================================
+# youtube-dl and ffmpeg binaries updater for Windows OS
+
 Updates youtube-dl.exe and ffmpeg binaries (ffmpeg.exe, ffplay.exe and ffprobe.exe) 
 with latest versions.
 
+### INFO Level
+```
+> python updater.py -f -p x64
+
+Updater               Starting force update
+YTDLUpdaterProcess    Updating youtube-dl.exe
+FFUpdaterProcess      Updating ffbinaries
+ZipExtractor          [ffplay-4.2.1-win-64.zip] Extracting ffplay.exe to C:\youtube-dl\ffplay.exe
+ZipExtractor          [ffmpeg-4.2.1-win-64.zip] Extracting ffmpeg.exe to C:\youtube-dl\ffmpeg.exe
+ZipExtractor          [ffprobe-4.2.1-win-64.zip] Extracting ffprobe.exe to C:\youtube-dl\ffprobe.exe
+YTDLUpdaterProcess    youtube-dl updated to version 2019.11.22
+Updater               Update finished
+```
+
+### DEBUG Level
 ```
 > python updater.py -f -p x64 -v3
-2019-10-12 02:23:27,775 updater   MainProcess              Updater               __init__               DEBUG    Initializing <__main__.Updater object at 0x041B6FD0>
-2019-10-12 02:23:27,776 managers  MainProcess              UpdaterProcessManager __init__               DEBUG    Initializing <core.managers.UpdaterProcessManager object at 0x041B6FB0>
-2019-10-12 02:23:27,778 updater   MainProcess              Updater               run                    INFO     Performing force update
-2019-10-12 02:23:27,780 updater   MainProcess              Updater               run                    INFO     Starting update
-2019-10-12 02:23:28,015 api       BaseManager-1            FFBinariesAPIClient   __init__               DEBUG    Initializing <core.api.FFBinariesAPIClient object at 0x04184B70>
-2019-10-12 02:23:28,019 procs     MainProcess              FFUpdaterProcess      __init__               DEBUG    Initializing <FFUpdaterProcess(FFUpdaterProcess-2, initial)>
-2019-10-12 02:23:28,019 managers  MainProcess              UpdaterProcessManager start_processes        INFO     Starting <FFUpdaterProcess(FFUpdaterProcess-2, initial)>
-2019-10-12 02:23:28,022 api       MainProcess              YouTubeDLAPIClient    __init__               DEBUG    Initializing <core.api.YouTubeDLAPIClient object at 0x041D61F0>
-2019-10-12 02:23:28,022 procs     MainProcess              YTDLUpdaterProcess    __init__               DEBUG    Initializing <YTDLUpdaterProcess(YTDLUpdaterProcess-3, initial)>
-2019-10-12 02:23:28,022 managers  MainProcess              UpdaterProcessManager start_processes        INFO     Starting <YTDLUpdaterProcess(YTDLUpdaterProcess-3, initial)>
-2019-10-12 02:23:28,242 procs     YTDLUpdaterProcess-3     YTDLUpdaterProcess    _update                INFO     Updating youtube-dl.exe
-2019-10-12 02:23:28,242 api       YTDLUpdaterProcess-3     YouTubeDLAPIClient    _request               DEBUG    GET https://yt-dl.org/latest/youtube-dl.exe
-2019-10-12 02:23:28,244 procs     FFUpdaterProcess-2       FFUpdaterProcess      _update                INFO     Updating ffbinaries
-2019-10-12 02:23:28,477 procs     FFUpdaterProcess-2       FFCompUpdaterProcess  __init__               DEBUG    Initializing <FFCompUpdaterProcess(FFCompUpdaterProcess-2:2, initial)>
-2019-10-12 02:23:28,478 extractor FFUpdaterProcess-2       ZipExtractor          __init__               DEBUG    Initializing <core.extractor.ZipExtractor object at 0x043454B0>
-2019-10-12 02:23:28,481 procs     FFUpdaterProcess-2       FFCompUpdaterProcess  __init__               DEBUG    Initializing <FFCompUpdaterProcess(FFCompUpdaterProcess-2:3, initial)>
-2019-10-12 02:23:28,481 extractor FFUpdaterProcess-2       ZipExtractor          __init__               DEBUG    Initializing <core.extractor.ZipExtractor object at 0x043455B0>
-2019-10-12 02:23:28,483 procs     FFUpdaterProcess-2       FFCompUpdaterProcess  __init__               DEBUG    Initializing <FFCompUpdaterProcess(FFCompUpdaterProcess-2:4, initial)>
-2019-10-12 02:23:28,484 extractor FFUpdaterProcess-2       ZipExtractor          __init__               DEBUG    Initializing <core.extractor.ZipExtractor object at 0x04345690>
-2019-10-12 02:23:28,723 api       BaseManager-1            FFBinariesAPIClient   _request               DEBUG    GET https://ffbinaries.com/api/v1/version/latest
-2019-10-12 02:23:28,931 api       BaseManager-1            FFBinariesAPIClient   _request               DEBUG    GET https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2/ffmpeg-4.2-win-64.zip
-2019-10-12 02:23:28,931 api       BaseManager-1            FFBinariesAPIClient   _request               DEBUG    GET https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2/ffprobe-4.2-win-64.zip
-2019-10-12 02:23:28,932 api       BaseManager-1            FFBinariesAPIClient   _request               DEBUG    GET https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2/ffplay-4.2-win-64.zip
-2019-10-12 02:23:34,359 extractor FFCompUpdaterProcess-2:3 ZipExtractor          extract                INFO     [ffplay-4.2-win-64.zip] Extracting ffplay.exe to C:\youtube-dl\ffplay.exe
-2019-10-12 02:23:34,812 extractor FFCompUpdaterProcess-2:3 ZipExtractor          extract                DEBUG    [ffplay-4.2-win-64.zip] Skipping __MACOSX/
-2019-10-12 02:23:34,813 extractor FFCompUpdaterProcess-2:3 ZipExtractor          extract                DEBUG    [ffplay-4.2-win-64.zip] Skipping __MACOSX/._ffplay.exe
-2019-10-12 02:23:35,983 extractor FFCompUpdaterProcess-2:4 ZipExtractor          extract                INFO     [ffmpeg-4.2-win-64.zip] Extracting ffmpeg.exe to C:\youtube-dl\ffmpeg.exe
-2019-10-12 02:23:36,404 extractor FFCompUpdaterProcess-2:2 ZipExtractor          extract                INFO     [ffprobe-4.2-win-64.zip] Extracting ffprobe.exe to C:\youtube-dl\ffprobe.exe
-2019-10-12 02:23:36,438 extractor FFCompUpdaterProcess-2:4 ZipExtractor          extract                DEBUG    [ffmpeg-4.2-win-64.zip] Skipping __MACOSX/
-2019-10-12 02:23:36,438 extractor FFCompUpdaterProcess-2:4 ZipExtractor          extract                DEBUG    [ffmpeg-4.2-win-64.zip] Skipping __MACOSX/._ffmpeg.exe
-2019-10-12 02:23:36,862 extractor FFCompUpdaterProcess-2:2 ZipExtractor          extract                DEBUG    [ffprobe-4.2-win-64.zip] Skipping __MACOSX/
-2019-10-12 02:23:36,862 extractor FFCompUpdaterProcess-2:2 ZipExtractor          extract                DEBUG    [ffprobe-4.2-win-64.zip] Skipping __MACOSX/._ffprobe.exe
-2019-10-12 02:23:38,673 updater   MainProcess              Updater               run                    INFO     Update finished
+
+2019-11-24 00:23:56,897 procs     FFUpdaterProcess-2       FFCompUpdaterProcess  __init__               DEBUG    Initializing <FFCompUpdaterProcess name='FFCompUpdaterProcess-2:3' parent=35808 initial>
+2019-11-24 00:23:56,897 extractor FFUpdaterProcess-2       ZipExtractor          __init__               DEBUG    Initializing <core.extractor.ZipExtractor object at 0x035AD580>
+2019-11-24 00:23:56,902 procs     FFUpdaterProcess-2       FFCompUpdaterProcess  __init__               DEBUG    Initializing <FFCompUpdaterProcess name='FFCompUpdaterProcess-2:4' parent=35808 initial>
+2019-11-24 00:23:56,902 extractor FFUpdaterProcess-2       ZipExtractor          __init__               DEBUG    Initializing <core.extractor.ZipExtractor object at 0x035AD610>
+2019-11-24 00:23:57,145 api       BaseManager-1            FFBinariesAPIClient   __make_request         DEBUG    GET https://ffbinaries.com/api/v1/version/latest
+2019-11-24 00:23:57,312 api       BaseManager-1            FFBinariesAPIClient   __make_request         DEBUG    GET https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2.1/ffmpeg-4.2.1-win-64.zip
+2019-11-24 00:23:57,312 api       BaseManager-1            FFBinariesAPIClient   __make_request         DEBUG    GET https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2.1/ffprobe-4.2.1-win-64.zip
+2019-11-24 00:23:57,314 api       BaseManager-1            FFBinariesAPIClient   __make_request         DEBUG    GET https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2.1/ffplay-4.2.1-win-64.zip
+2019-11-24 00:24:04,415 extractor FFCompUpdaterProcess-2:4 ZipExtractor          extract                INFO     [ffplay-4.2.1-win-64.zip] Extracting ffplay.exe to C:\youtube-dl\ffplay.exe
+2019-11-24 00:24:04,621 extractor FFCompUpdaterProcess-2:3 ZipExtractor          extract                INFO     [ffprobe-4.2.1-win-64.zip] Extracting ffprobe.exe to C:\youtube-dl\ffprobe.exe
+2019-11-24 00:24:04,831 extractor FFCompUpdaterProcess-2:2 ZipExtractor          extract                INFO     [ffmpeg-4.2.1-win-64.zip] Extracting ffmpeg.exe to C:\youtube-dl\ffmpeg.exe
+2019-11-24 00:24:05,104 extractor FFCompUpdaterProcess-2:4 ZipExtractor          extract                DEBUG    [ffplay-4.2.1-win-64.zip] Skipping __MACOSX/
+2019-11-24 00:24:05,104 extractor FFCompUpdaterProcess-2:4 ZipExtractor          extract                DEBUG    [ffplay-4.2.1-win-64.zip] Skipping __MACOSX/._ffplay.exe
+2019-11-24 00:24:05,299 extractor FFCompUpdaterProcess-2:3 ZipExtractor          extract                DEBUG    [ffprobe-4.2.1-win-64.zip] Skipping __MACOSX/
+2019-11-24 00:24:05,299 extractor FFCompUpdaterProcess-2:3 ZipExtractor          extract                DEBUG    [ffprobe-4.2.1-win-64.zip] Skipping __MACOSX/._ffprobe.exe
+2019-11-24 00:24:05,492 extractor FFCompUpdaterProcess-2:2 ZipExtractor          extract                DEBUG    [ffmpeg-4.2.1-win-64.zip] Skipping __MACOSX/
+2019-11-24 00:24:05,493 extractor FFCompUpdaterProcess-2:2 ZipExtractor          extract                DEBUG    [ffmpeg-4.2.1-win-64.zip] Skipping __MACOSX/._ffmpeg.exe
+2019-11-24 00:24:07,058 procs     YTDLUpdaterProcess-3     YTDLUpdaterProcess    _print_version         INFO     youtube-dl updated to version 2019.11.22
+2019-11-24 00:24:07,073 updater   MainProcess              Updater               run                    INFO     Update finished
 ```
 
-Requirements
-------------
+## Requirements
 Python 3.7+, requests, ffbinaries-api-client.
 
-Installation
-------------
+## Installation
 ```
 git clone https://github.com/tropicoo/youtube-dl-ffmpeg-updater-win.git
 pip3 install -r requirements.txt
 ```
 
-Usage
------
+## Usage
 ```
 > python updater.py -h
 usage: updater.py [-h] [-d DESTINATION] [-p {x32,x64}] [-f] [-v [{0,1,2,3}]]
@@ -68,4 +67,17 @@ optional arguments:
   -f, --force           force update
   -v [{0,1,2,3}], --verbose [{0,1,2,3}]
                         log level 0-3, default 2
+```
+
+## Misc
+Easily run as batch file on Windows.
+
+```
+:: Content of file "youtube-dl udpater.bat"
+
+@echo off
+
+python3 <absolute_path_to_updater.py> -f -p x64 -v3
+
+pause
 ```

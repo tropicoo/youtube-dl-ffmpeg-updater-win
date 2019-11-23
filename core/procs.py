@@ -66,6 +66,13 @@ class YTDLUpdaterProcess(BaseUpdaterProcess):
             for chunk in stream_obj.iter_content(chunk_size=CHUNKS_SIZE):
                 f_out.write(chunk)
 
+        self._print_version()
+
+    def _print_version(self):
+        cmd = os.path.join(self._settings.destination, EXE_YTDL + ' --version')
+        version = subprocess.check_output(cmd, text=True).strip()
+        self._log.info(f'youtube-dl updated to version {version}')
+
     def _update_via_subprocess(self):
         """Update youtube-dl by subprocess call."""
         stdout = subprocess.check_output(CMD_YOUTUBE_DL_UPDATE.format(

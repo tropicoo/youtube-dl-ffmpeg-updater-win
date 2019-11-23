@@ -1,9 +1,12 @@
 """Constants Module."""
 
-LOG_MAP = {0: 'ERROR',
-           1: 'WARNING',
-           2: 'INFO',
-           3: 'DEBUG'}
+LOG_FORMAT_DEBUG = '%(asctime)s %(module)-9s %(processName)-24s %(name)-21s %(funcName)-22s %(levelname)-8s %(message)s'
+LOG_FORMAT_INFO = '%(name)-21s %(message)s'
+
+LOG_MAP = {0: ('ERROR', LOG_FORMAT_INFO),
+           1: ('WARNING', LOG_FORMAT_INFO),
+           2: ('INFO', LOG_FORMAT_INFO),
+           3: ('DEBUG', LOG_FORMAT_DEBUG)}
 
 
 class _HTTPMethods:

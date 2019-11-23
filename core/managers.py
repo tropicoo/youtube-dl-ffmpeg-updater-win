@@ -18,7 +18,7 @@ class UpdaterProcessManager:
         """Start Updater Processes."""
         for i in range(len(self._procs)):
             proc = self._procs[i](settings)
-            self._log.info('Starting %s', proc)
+            self._log.debug('Starting %s', proc)
             proc.start()
             self._jobs.append(proc)
 
