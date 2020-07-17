@@ -2,12 +2,13 @@
 
 import time
 import unittest
-from unittest.mock import patch, PropertyMock
+from unittest.mock import PropertyMock, patch
 
 import requests
+from ffbinaries import FFBinariesAPIClient
 
 import core.const as const
-from core.api import FFBinariesAPIClient, YouTubeDLAPIClient
+from core.api import YouTubeDLAPIClient
 
 LOG_LEVEL = 3  # DEBUG
 
@@ -84,7 +85,7 @@ class TestYouTubeDLAPIClient(unittest.TestCase):
         self.assertEqual(HEADER_CONTENT_DISPOSITION_VALUE.format(
             filename=const.EXE_YTDL),
             obj.headers[HEADER_CONTENT_DISPOSITION])
-        requests.request.assert_called_once_with(method=const.HTTP.GET,
+        requests.request.assert_called_once_with(method=const.Http.GET,
                                                  url=const.URL_YTDL,
                                                  stream=True)
 
@@ -111,9 +112,11 @@ class TestFFBinariesAPIClient(unittest.TestCase):
                                  version=LATEST_VERSION,
                                  platform=platform)))
 
-    @patch('core.api.FFBinariesAPIClient.get_latest_metadata', return_value=LATEST_JSON)
+    @patch('core.api.FFBinariesAPIClient.get_latest_metadata',
+           return_value=LATEST_JSON)
     @patch.object(requests, 'request')
-    def test_download_latest_version(self, mock_request, get_latest_metadata_mock):
+    def test_download_latest_version(self, mock_request,
+                                     get_latest_metadata_mock):
         for platform in self._platforms:
             for comp in self._components:
                 filename_platform = PLATFORM_MAP[platform]
@@ -126,13 +129,16 @@ class TestFFBinariesAPIClient(unittest.TestCase):
                                                         component=comp)
                 self._verify_data(obj, filename_platform, comp)
                 self._api.get_latest_metadata.assert_called_once()
-                requests.request.assert_called_once_with(method=const.HTTP.GET,
-                                                         url=LATEST_JSON['bin'][platform][comp],
+                requests.request.assert_called_once_with(method=const.Http.GET,
+                                                         url=
+                                                         LATEST_JSON['bin'][
+                                                             platform][comp],
                                                          stream=False)
                 self._api.get_latest_metadata.reset_mock()
                 requests.request.reset_mock()
 
-    @patch('core.api.FFBinariesAPIClient.get_latest_metadata', return_value=LATEST_JSON)
+    @patch('core.api.FFBinariesAPIClient.get_latest_metadata',
+           return_value=LATEST_JSON)
     def test_get_latest_version(self, get_latest_metadata_mock):
         version = self._api.get_latest_version()
         self.assertEqual(version, LATEST_VERSION)

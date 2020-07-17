@@ -8,10 +8,10 @@ import subprocess
 
 from ffbinaries import FFBinariesAPIClient
 
-from core.api import YouTubeDLAPIClient
-from core.const import (EXE_YTDL, CMD_YOUTUBE_DL_UPDATE, CMD_FFMPEG_VERSION,
-                        REQUIRED_FFBINARIES, CHUNKS_SIZE, FFMPEG_NUM_REGEX,
-                        PLATFORMS)
+from core.api import FFBinariesZeranoeClient, YouTubeDLAPIClient
+from core.const import (CHUNK_SIZE, CMD_FFMPEG_VERSION, CMD_YOUTUBE_DL_UPDATE,
+                        EXE_YTDL, FFMPEG_NUM_REGEX, PLATFORMS,
+                        REQUIRED_FFBINARIES)
 from core.extractor import ZipExtractor
 from core.log import init_logging
 from core.utils import init_shared_manager, response_to_zip
@@ -49,7 +49,7 @@ class YTDLUpdaterProcess(BaseUpdaterProcess):
         self._log.info('Updating %s', EXE_YTDL)
 
         if self._settings.force:
-            self._update_via_web()
+            self._update_from_web()
             return
 
         try:
@@ -57,13 +57,14 @@ class YTDLUpdaterProcess(BaseUpdaterProcess):
         except FileNotFoundError:
             self._log.info('Local %s build not found, downloading from web',
                            EXE_YTDL)
-            self._update_via_web()
+            self._update_from_web()
 
-    def _update_via_web(self):
-        """Update youtube-dl through the web."""
+    def _update_from_web(self):
+        """Update youtube-dl from the web."""
         stream_obj = self._api.download_latest_version()
-        with open(os.path.join(self._settings.destination, EXE_YTDL), 'wb') as f_out:
-            for chunk in stream_obj.iter_content(chunk_size=CHUNKS_SIZE):
+        with open(os.path.join(self._settings.destination, EXE_YTDL),
+                  'wb') as f_out:
+            for chunk in stream_obj.iter_content(chunk_size=CHUNK_SIZE):
                 f_out.write(chunk)
 
         self._print_version()
@@ -94,42 +95,25 @@ class FFCompUpdaterProcess(BaseUpdaterProcess):
             component_res = self._api.download_latest_version(
                 platform=PLATFORMS[self._settings.platform]['endpoint'],
                 component=self._queue.get())
-            zip_archive = response_to_zip(component_res)
-            self._extractor.extract(zip_archive, dest=self._settings.destination)
+            self._extractor.extract(response_to_zip(component_res),
+                                    dest=self._settings.destination)
 
 
-class FFUpdaterProcess(BaseUpdaterProcess):
-    """ffmpeg Updater Process Class."""
+class BaseFFUpdaterProcess(BaseUpdaterProcess):
 
-    def __init__(self, settings):
-        manager = init_shared_manager((FFBinariesAPIClient,))
-        super().__init__(api_client=manager.FFBinariesAPIClient(
-            use_caching=True, log_init=(init_logging, settings.log_level)),
-                         settings=settings)
-        self._spawned = []
+    def __init__(self, api_client, settings):
+        super().__init__(api_client=api_client, settings=settings)
 
     def _update(self):
         """Update ffmpeg build."""
         self._log.info('Updating ffbinaries')
         if self._need_update():
-            self._spawn_child_processes()
+            self._perform_update()
         else:
             self._log.info('ffbinaries are up-to-date, nothing to update')
 
-    def _spawn_child_processes(self):
-        queue = multiprocessing.Manager().Queue()
-        for comp in map(lambda x: x.rsplit('.', 1)[0], REQUIRED_FFBINARIES):
-            queue.put(comp)
-
-        for i in range(len(REQUIRED_FFBINARIES)):
-            proc = FFCompUpdaterProcess(api_client=self._api,
-                                        queue=queue,
-                                        settings=self._settings)
-            proc.start()
-            self._spawned.append(proc)
-
-        for proc in self._spawned:
-            proc.join()
+    def _perform_update(self):
+        raise NotImplementedError
 
     def _need_update(self):
         """Check if ffbinaries need to be updated."""
@@ -158,9 +142,49 @@ class FFUpdaterProcess(BaseUpdaterProcess):
                 text=True).splitlines()[0]
             ffmpeg_ver = re.search(FFMPEG_NUM_REGEX, ffmpeg_ver).group()
         except FileNotFoundError:
-            self._log.info('Local ffmpeg build not found, will proceed '
-                           'with download')
+            self._log.warning('Local ffmpeg build not found, will proceed '
+                              'with download')
         except OSError as err:
             self._log.warning('Error getting local ffmpeg build version: %s',
                               err)
         return ffmpeg_ver
+
+
+class FFUpdaterProcess(BaseFFUpdaterProcess):
+    """ffmpeg Updater Process Class."""
+
+    def __init__(self, settings):
+        manager = init_shared_manager((FFBinariesAPIClient,))
+        super().__init__(api_client=manager.FFBinariesAPIClient(
+            use_caching=True, log_init=(init_logging, settings.log_level)),
+            settings=settings)
+        self._spawned = []
+
+    def _perform_update(self):
+        queue = multiprocessing.Manager().Queue()
+        for comp in map(lambda x: x.rsplit('.', 1)[0], REQUIRED_FFBINARIES):
+            queue.put(comp)
+
+        for i in range(len(REQUIRED_FFBINARIES)):
+            proc = FFCompUpdaterProcess(api_client=self._api,
+                                        queue=queue,
+                                        settings=self._settings)
+            proc.start()
+            self._spawned.append(proc)
+
+        for proc in self._spawned:
+            proc.join()
+
+
+class FFUpdaterProcessZeranoe(BaseFFUpdaterProcess):
+    def __init__(self, settings):
+        manager = init_shared_manager((FFBinariesZeranoeClient,))
+        super().__init__(api_client=manager.FFBinariesZeranoeClient(
+            log_level=settings.log_level), settings=settings)
+        self._extractor = ZipExtractor()
+
+    def _perform_update(self):
+        file_stream = self._api.download_latest_version()
+        filename = file_stream.url.rsplit('/', 1)[1]
+        self._extractor.extract(response_to_zip(file_stream, filename),
+                                dest=self._settings.destination)
