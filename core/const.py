@@ -12,31 +12,26 @@ LOG_MAP = {0: ('ERROR', LOG_FORMAT_INFO),
 class _FfmpegLinkingType:
     """ffmpeg linking types."""
 
-    __slots__ = ('STATIC', 'SHARED', 'DEV')
-
-    def __init__(self):
-        for method in self.__slots__:
-            setattr(self, method, method.lower())
+    STATIC = 'static'
+    SHARED = 'shared'
+    DEV = 'dev'
 
 
 class _HTTPMethods:
     """HTTP Methods Class."""
 
-    __slots__ = ('GET', 'POST', 'PUT', 'PATCH', 'DELETE')
-
-    def __init__(self):
-        for method in self.__slots__:
-            setattr(self, method, method)
+    GET = 'get'
+    POST = 'post'
+    PUT = 'put'
+    PATCH = 'patch'
+    DELETE = 'delete'
 
 
 class _WinPlatform:
     """Windows platform types."""
 
-    __slots__ = ('WIN32', 'WIN64')
-
-    def __init__(self):
-        for method in self.__slots__:
-            setattr(self, method, method.lower())
+    WIN32 = 'win32'
+    WIN64 = 'win64'
 
 
 class FFReleaseChannel:
@@ -57,12 +52,6 @@ DEF_EXTRACT_PATH = r'C:\youtube-dl'
 
 EXE_YTDL = 'youtube-dl.exe'
 URL_YTDL = f'https://yt-dl.org/latest/{EXE_YTDL}'
-
-URL_ZERANOE = 'https://ffmpeg.zeranoe.com'
-URL_ZERANOE_BUILDS = f'{URL_ZERANOE}/builds'
-URL_ZERANOE_BUILDS_JSON = f'{URL_ZERANOE_BUILDS}/builds.json'
-FFMPEG_FILE_ZERANOE_PATTERN = 'ffmpeg-{build_version}-{platform}-{linking}.zip'
-URL_ZERANOE_DOWNLOAD = f'{URL_ZERANOE_BUILDS}/{{platform}}/{{linking}}/{{filename}}'
 
 REQUIRED_FFBINARIES = ('ffmpeg.exe', 'ffprobe.exe', 'ffplay.exe')
 FFMPEG_NUM_REGEX = r'(([0-9]+\.?)+)'

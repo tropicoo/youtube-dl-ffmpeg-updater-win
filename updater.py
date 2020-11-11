@@ -2,7 +2,7 @@
 
 import argparse
 
-from core.const import DEF_EXTRACT_PATH, LOG_MAP, WinPlatform, FFSource
+from core.const import DEF_EXTRACT_PATH, FFSource, LOG_MAP, WinPlatform
 from core.log import init_logging
 from core.updater import Updater
 
@@ -19,9 +19,9 @@ def parse_args():
                         help='ffmpeg binaries os platform, default win32')
     parser.add_argument('-f', '--force', default=False, action='store_true',
                         dest='force', help='force update')
-    parser.add_argument('-ff-src', '--ffmpeg-source', default=FFSource.ZERANOE,
+    parser.add_argument('-ff-src', '--ffmpeg-source', default=FFSource.FFBINARIES,
                         action='store', dest='ff_src', help='ffbinaries source',
-                        choices=(FFSource.ZERANOE, FFSource.FFBINARIES))
+                        choices=(FFSource.FFBINARIES,))
     parser.add_argument('-v', '--verbose', nargs='?', const=2, default=2,
                         action='store', dest='log_level', type=int,
                         help='log level 0-3, default 2', choices=LOG_MAP.keys())
@@ -33,8 +33,8 @@ def main():
     args = parse_args()
     init_logging(args.log_level)
 
-    updater = Updater()
-    updater.run(settings=args)
+    updater = Updater(settings=args)
+    updater.run()
 
 
 if __name__ == '__main__':

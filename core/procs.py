@@ -8,7 +8,7 @@ import subprocess
 
 from ffbinaries import FFBinariesAPIClient
 
-from core.api import FFBinariesZeranoeClient, YouTubeDLAPIClient
+from core.api import YouTubeDLAPIClient
 from core.const import (CHUNK_SIZE, CMD_FFMPEG_VERSION, CMD_YOUTUBE_DL_UPDATE,
                         EXE_YTDL, FFMPEG_NUM_REGEX, PLATFORMS,
                         REQUIRED_FFBINARIES)
@@ -174,17 +174,3 @@ class FFUpdaterProcess(BaseFFUpdaterProcess):
 
         for proc in self._spawned:
             proc.join()
-
-
-class FFUpdaterProcessZeranoe(BaseFFUpdaterProcess):
-    def __init__(self, settings):
-        manager = init_shared_manager((FFBinariesZeranoeClient,))
-        super().__init__(api_client=manager.FFBinariesZeranoeClient(
-            log_level=settings.log_level), settings=settings)
-        self._extractor = ZipExtractor()
-
-    def _perform_update(self):
-        file_stream = self._api.download_latest_version()
-        filename = file_stream.url.rsplit('/', 1)[1]
-        self._extractor.extract(response_to_zip(file_stream, filename),
-                                dest=self._settings.destination)

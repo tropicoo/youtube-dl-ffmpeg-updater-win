@@ -54,7 +54,7 @@ pip3 install -r requirements.txt
 ## Usage
 ```
 > python updater.py -h
-usage: updater.py [-h] [-d DESTINATION] [-p {win32,win64}] [-f] [-ff-src {zeranoe,ffbinaries}] [-v [{0,1,2,3}]]
+usage: updater.py [-h] [-d DESTINATION] [-p {win32,win64}] [-f] [-ff-src {ffbinaries}] [-v [{0,1,2,3}]]
 
 youtube-dl & ffmpeg binaries updater for windows os
 
@@ -65,7 +65,7 @@ optional arguments:
   -p {win32,win64}, --platform {win32,win64}
                         ffmpeg binaries os platform, default win32
   -f, --force           force update
-  -ff-src {zeranoe,ffbinaries}, --ffmpeg-source {zeranoe,ffbinaries}
+  -ff-src {ffbinaries}, --ffmpeg-source {ffbinaries}
                         ffbinaries source
   -v [{0,1,2,3}], --verbose [{0,1,2,3}]
                         log level 0-3, default 2
