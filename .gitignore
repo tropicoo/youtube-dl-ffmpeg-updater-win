@@ -1,3 +1,6 @@
+/.isort.cfg
+
+
 /venv_*
 /.idea
 /tmp.py

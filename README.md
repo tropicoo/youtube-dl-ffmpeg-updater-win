@@ -5,45 +5,91 @@ with their latest versions.
 
 ### INFO Level
 ```
-> python updater.py -f -p win64
+> python updater.py -f
 
-Updater               Starting force update
-YTDLUpdaterProcess    Updating youtube-dl.exe
-FFUpdaterProcess      Updating ffbinaries
-ZipExtractor          [ffplay-4.2.1-win-64.zip] Extracting ffplay.exe to C:\youtube-dl\ffplay.exe
-ZipExtractor          [ffmpeg-4.2.1-win-64.zip] Extracting ffmpeg.exe to C:\youtube-dl\ffmpeg.exe
-ZipExtractor          [ffprobe-4.2.1-win-64.zip] Extracting ffprobe.exe to C:\youtube-dl\ffprobe.exe
-YTDLUpdaterProcess    youtube-dl updated to version 2019.11.22
-Updater               Update finished
+Updater                   INFO     Starting force update
+CodexFfmpegUpdaterTask    INFO     Updating ffmpeg binaries from codex
+YTDLUpdaterTask           INFO     Updating youtube-dl.exe
+YTDLUpdaterTask           INFO     youtube-dl updated to version 2021.06.06
+ZipExtractTask            INFO     [ffmpeg-release-essentials.zip] Extract ffmpeg-4.4-essentials_build/bin/ffmpeg.exe to C:\youtube-dl\ffmpeg.exe
+ZipExtractTask            INFO     [ffmpeg-release-essentials.zip] Extract ffmpeg-4.4-essentials_build/bin/ffplay.exe to C:\youtube-dl\ffplay.exe
+ZipExtractTask            INFO     [ffmpeg-release-essentials.zip] Extract ffmpeg-4.4-essentials_build/bin/ffprobe.exe to C:\youtube-dl\ffprobe.exe
+Updater                   INFO     Force update finished
 ```
 
 ### DEBUG Level
 ```
 > python updater.py -f -p win64 -v3
 
-2019-11-24 00:23:56,897 procs     FFUpdaterProcess-2       FFCompUpdaterProcess  __init__               DEBUG    Initializing <FFCompUpdaterProcess name='FFCompUpdaterProcess-2:3' parent=35808 initial>
-2019-11-24 00:23:56,897 extractor FFUpdaterProcess-2       ZipExtractor          __init__               DEBUG    Initializing <core.extractor.ZipExtractor object at 0x035AD580>
-2019-11-24 00:23:56,902 procs     FFUpdaterProcess-2       FFCompUpdaterProcess  __init__               DEBUG    Initializing <FFCompUpdaterProcess name='FFCompUpdaterProcess-2:4' parent=35808 initial>
-2019-11-24 00:23:56,902 extractor FFUpdaterProcess-2       ZipExtractor          __init__               DEBUG    Initializing <core.extractor.ZipExtractor object at 0x035AD610>
-2019-11-24 00:23:57,145 api       BaseManager-1            FFBinariesAPIClient   __make_request         DEBUG    GET https://ffbinaries.com/api/v1/version/latest
-2019-11-24 00:23:57,312 api       BaseManager-1            FFBinariesAPIClient   __make_request         DEBUG    GET https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2.1/ffmpeg-4.2.1-win-64.zip
-2019-11-24 00:23:57,312 api       BaseManager-1            FFBinariesAPIClient   __make_request         DEBUG    GET https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2.1/ffprobe-4.2.1-win-64.zip
-2019-11-24 00:23:57,314 api       BaseManager-1            FFBinariesAPIClient   __make_request         DEBUG    GET https://github.com/vot/ffbinaries-prebuilt/releases/download/v4.2.1/ffplay-4.2.1-win-64.zip
-2019-11-24 00:24:04,415 extractor FFCompUpdaterProcess-2:4 ZipExtractor          extract                INFO     [ffplay-4.2.1-win-64.zip] Extracting ffplay.exe to C:\youtube-dl\ffplay.exe
-2019-11-24 00:24:04,621 extractor FFCompUpdaterProcess-2:3 ZipExtractor          extract                INFO     [ffprobe-4.2.1-win-64.zip] Extracting ffprobe.exe to C:\youtube-dl\ffprobe.exe
-2019-11-24 00:24:04,831 extractor FFCompUpdaterProcess-2:2 ZipExtractor          extract                INFO     [ffmpeg-4.2.1-win-64.zip] Extracting ffmpeg.exe to C:\youtube-dl\ffmpeg.exe
-2019-11-24 00:24:05,104 extractor FFCompUpdaterProcess-2:4 ZipExtractor          extract                DEBUG    [ffplay-4.2.1-win-64.zip] Skipping __MACOSX/
-2019-11-24 00:24:05,104 extractor FFCompUpdaterProcess-2:4 ZipExtractor          extract                DEBUG    [ffplay-4.2.1-win-64.zip] Skipping __MACOSX/._ffplay.exe
-2019-11-24 00:24:05,299 extractor FFCompUpdaterProcess-2:3 ZipExtractor          extract                DEBUG    [ffprobe-4.2.1-win-64.zip] Skipping __MACOSX/
-2019-11-24 00:24:05,299 extractor FFCompUpdaterProcess-2:3 ZipExtractor          extract                DEBUG    [ffprobe-4.2.1-win-64.zip] Skipping __MACOSX/._ffprobe.exe
-2019-11-24 00:24:05,492 extractor FFCompUpdaterProcess-2:2 ZipExtractor          extract                DEBUG    [ffmpeg-4.2.1-win-64.zip] Skipping __MACOSX/
-2019-11-24 00:24:05,493 extractor FFCompUpdaterProcess-2:2 ZipExtractor          extract                DEBUG    [ffmpeg-4.2.1-win-64.zip] Skipping __MACOSX/._ffmpeg.exe
-2019-11-24 00:24:07,058 procs     YTDLUpdaterProcess-3     YTDLUpdaterProcess    _print_version         INFO     youtube-dl updated to version 2019.11.22
-2019-11-24 00:24:07,073 updater   MainProcess              Updater               run                    INFO     Update finished
+2021-06-28 19:40:30,845 updater     Updater                   __init__               DEBUG    Initializing Updater
+2021-06-28 19:40:30,845 managers    TaskManager               __init__               DEBUG    Initializing TaskManager
+2021-06-28 19:40:30,845 updater     Updater                   run                    INFO     Starting force update
+2021-06-28 19:40:30,846 abstract    CodexFFAPIClient          __init__               DEBUG    Initializing CodexFFAPIClient
+2021-06-28 19:40:30,846 abstract    CodexFfmpegUpdaterTask    __init__               DEBUG    Initializing CodexFfmpegUpdaterTask
+2021-06-28 19:40:30,846 extractor   ZipExtractor              __init__               DEBUG    Initializing ZipExtractor
+2021-06-28 19:40:30,846 abstract    YouTubeDLAPIClient        __init__               DEBUG    Initializing YouTubeDLAPIClient
+2021-06-28 19:40:30,847 abstract    YTDLUpdaterTask           __init__               DEBUG    Initializing YTDLUpdaterTask
+2021-06-28 19:40:30,847 abstract    CodexFfmpegUpdaterTask    _update                INFO     Updating ffmpeg binaries from codex
+2021-06-28 19:40:30,849 ytdl        YTDLUpdaterTask           _update                INFO     Updating youtube-dl.exe
+2021-06-28 19:40:35,080 utils       YTDLUpdaterTask           get_stdout             DEBUG    Command "C:\youtube-dl\youtube-dl.exe --version" exited with returncode 0
+2021-06-28 19:40:35,080 ytdl        YTDLUpdaterTask           _print_version         INFO     youtube-dl updated to version 2021.06.06
+2021-06-28 19:40:35,081 abstract    YouTubeDLAPIClient        close_session          DEBUG    Closing session
+2021-06-28 19:40:42,278 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/
+2021-06-28 19:40:42,278 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/bin/
+2021-06-28 19:40:42,278 extract     ZipExtractTask            __init__               DEBUG    Initializing ZipExtractTask
+2021-06-28 19:40:42,279 extract     ZipExtractTask            __init__               DEBUG    Initializing ZipExtractTask
+2021-06-28 19:40:42,279 extract     ZipExtractTask            __init__               DEBUG    Initializing ZipExtractTask
+2021-06-28 19:40:42,279 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/
+2021-06-28 19:40:42,280 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/bootstrap.min.css
+2021-06-28 19:40:42,280 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/default.css
+2021-06-28 19:40:42,280 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/developer.html
+2021-06-28 19:40:42,280 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/faq.html
+2021-06-28 19:40:42,280 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/fate.html
+2021-06-28 19:40:42,281 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg-all.html
+2021-06-28 19:40:42,281 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg-bitstream-filters.html
+2021-06-28 19:40:42,281 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg-codecs.html
+2021-06-28 19:40:42,282 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg-devices.html
+2021-06-28 19:40:42,282 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg-filters.html
+2021-06-28 19:40:42,282 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg-formats.html
+2021-06-28 19:40:42,282 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg-protocols.html
+2021-06-28 19:40:42,283 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg-resampler.html
+2021-06-28 19:40:42,283 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg-scaler.html
+2021-06-28 19:40:42,283 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg-utils.html
+2021-06-28 19:40:42,283 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffmpeg.html
+2021-06-28 19:40:42,284 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffplay-all.html
+2021-06-28 19:40:42,284 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffplay.html
+2021-06-28 19:40:42,284 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffprobe-all.html
+2021-06-28 19:40:42,285 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/ffprobe.html
+2021-06-28 19:40:42,285 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/general.html
+2021-06-28 19:40:42,286 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/git-howto.html
+2021-06-28 19:40:42,286 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/libavcodec.html
+2021-06-28 19:40:42,287 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/libavdevice.html
+2021-06-28 19:40:42,287 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/libavfilter.html
+2021-06-28 19:40:42,287 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/libavformat.html
+2021-06-28 19:40:42,288 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/libavutil.html
+2021-06-28 19:40:42,288 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/libswresample.html
+2021-06-28 19:40:42,288 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/libswscale.html
+2021-06-28 19:40:42,288 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/mailing-list-faq.html
+2021-06-28 19:40:42,289 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/nut.html
+2021-06-28 19:40:42,289 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/platform.html
+2021-06-28 19:40:42,289 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/doc/style.min.css
+2021-06-28 19:40:42,289 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/LICENSE
+2021-06-28 19:40:42,290 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/presets/
+2021-06-28 19:40:42,290 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/presets/libvpx-1080p.ffpreset
+2021-06-28 19:40:42,290 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/presets/libvpx-1080p50_60.ffpreset
+2021-06-28 19:40:42,290 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/presets/libvpx-360p.ffpreset
+2021-06-28 19:40:42,291 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/presets/libvpx-720p.ffpreset
+2021-06-28 19:40:42,291 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/presets/libvpx-720p50_60.ffpreset
+2021-06-28 19:40:42,291 extractor   ZipExtractor              _get_extract_coros     DEBUG    [ffmpeg-release-essentials.zip] Skip ffmpeg-4.4-essentials_build/README.txt
+2021-06-28 19:40:42,301 extract     ZipExtractTask            extract                INFO     [ffmpeg-release-essentials.zip] Extract ffmpeg-4.4-essentials_build/bin/ffmpeg.exe to C:\youtube-dl\ffmpeg.exe
+2021-06-28 19:40:42,308 extract     ZipExtractTask            extract                INFO     [ffmpeg-release-essentials.zip] Extract ffmpeg-4.4-essentials_build/bin/ffplay.exe to C:\youtube-dl\ffplay.exe
+2021-06-28 19:40:42,322 extract     ZipExtractTask            extract                INFO     [ffmpeg-release-essentials.zip] Extract ffmpeg-4.4-essentials_build/bin/ffprobe.exe to C:\youtube-dl\ffprobe.exe
+2021-06-28 19:40:42,809 abstract    CodexFFAPIClient          close_session          DEBUG    Closing session
+2021-06-28 19:40:42,810 updater     Updater                   run                    INFO     Force update finished
 ```
 
 ## Requirements
-Python 3.7+, requests, ffbinaries-api-client.
+Python 3.7+.
 
 ## Installation
 ```
@@ -54,19 +100,22 @@ pip3 install -r requirements.txt
 ## Usage
 ```
 > python updater.py -h
-usage: updater.py [-h] [-d DESTINATION] [-p {win32,win64}] [-f] [-ff-src {ffbinaries}] [-v [{0,1,2,3}]]
+
+usage: updater.py [-h] [-c {ytdl,ffmpeg,all}] [-d DESTINATION] [-p {win32,win64}] [-f] [-ff-src {codex}] [-v [{0,1,2,3}]]
 
 youtube-dl & ffmpeg binaries updater for windows os
 
 optional arguments:
   -h, --help            show this help message and exit
+  -c {ytdl,ffmpeg,all}, --component {ytdl,ffmpeg,all}
+                        updater components to update, default all
   -d DESTINATION, --destination DESTINATION
                         youtube-dl directory path, default C:\youtube-dl
   -p {win32,win64}, --platform {win32,win64}
-                        ffmpeg binaries os platform, default win32
-  -f, --force           force update
-  -ff-src {ffbinaries}, --ffmpeg-source {ffbinaries}
-                        ffbinaries source
+                        ffmpeg binaries os platform, default win64
+  -f, --force           perform force update
+  -ff-src {codex}, --ffmpeg-source {codex}
+                        ffmpeg binaries source, currently supported only from codex
   -v [{0,1,2,3}], --verbose [{0,1,2,3}]
                         log level 0-3, default 2
 ```

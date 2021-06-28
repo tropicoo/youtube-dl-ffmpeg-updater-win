@@ -1,6 +1,10 @@
 """Exceptions Module."""
 
 
-class UpdaterException(Exception):
+class UpdaterError(Exception):
     """Updater Base Exception Class."""
+    pass
+
+
+class NoFileToExtractError(UpdaterError):
     pass
