@@ -13,8 +13,15 @@ class AbstractApiClient(abc.ABC):
         self._session = ClientSession(connector=TCPConnector(verify_ssl=False),
                                       raise_for_status=True)
 
+    async def _get_text(self, url: str) -> str:
+        """Get text from request."""
+        self._log.debug('GET %s', url)
+        async with self._session.get(url) as response:
+            return await response.text()
+
     async def close_session(self):
-        self._log.debug('Closing session')
+        """Close `ClientSession`."""
+        self._log.debug('Close client session')
         await self._session.close()
 
     @abc.abstractmethod

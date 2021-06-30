@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from io import BytesIO
 
 from core.clients.abstract import AbstractApiClient
-from core.constants import CodexBuildType, CodexReleaseType
+from core.constants import CHUNK_SIZE, CodexBuildType, CodexReleaseType
+from core.third_party.stream_unzip import stream_unzip
 
 
 class CodexApiPath:
@@ -35,10 +36,6 @@ class CodexFFAPIClient(AbstractApiClient):
         CodexReleaseType.GIT: BUILDS_URL + CodexApiPath.LATEST_GIT_VER,
     }
 
-    async def _get_text(self, url: str) -> str:
-        async with self._session.get(url) as response:
-            return await response.text()
-
     async def get_changelog_counter(self) -> str:
         return await self._get_text(self.BUILDS_URL + CodexApiPath.CHANGELOG_COUNTER)
 
@@ -53,14 +50,23 @@ class CodexFFAPIClient(AbstractApiClient):
 
     async def download_latest_version(self,
                                       release_type: str = CodexReleaseType.RELEASE,
-                                      build_type: str = CodexBuildType.ESSENTIALS) -> ByteResponse:
-        url = self.BUILDS_URL + self._make_archive_path(release_type, build_type)
-        async with self._session.get(url) as response:
-            return ByteResponse(bytes_data=BytesIO(await response.read()),
-                                headers=dict(response.headers),
-                                url=str(url))
+                                      build_type: str = CodexBuildType.ESSENTIALS):
+        async def zipped_chunks_generator():
+            """Async zip archive chunks generator."""
+            zip_filename = self._make_archive_filename(release_type, build_type)
+            url = self.BUILDS_URL + zip_filename
+            self._log.debug('GET %s', url)
+            self._log.debug('Start download %s', zip_filename)
+            async with self._session.get(url) as response:
+                async for chunk in response.content.iter_chunked(CHUNK_SIZE):
+                    yield chunk
+                self._log.debug('End download %s', zip_filename)
+
+        async for filename, file_size, unzipped_chunks in stream_unzip(zipped_chunks_generator()):
+            yield filename, file_size, unzipped_chunks
 
     @staticmethod
-    def _make_archive_path(release_type: str, build_type: str,
-                           extension: str = CodexArchExtension.ZIP) -> str:
+    def _make_archive_filename(release_type: str, build_type: str,
+                               extension: str = CodexArchExtension.ZIP) -> str:
+        """Make zip archive filename to append to download url."""
         return f'ffmpeg-{release_type}-{build_type}.{extension}'

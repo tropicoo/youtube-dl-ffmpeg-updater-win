@@ -1,6 +1,6 @@
 import asyncio
 
-from argparser import parse_args
+from core.argparser import parse_args
 from core.log import init_logging
 from core.updater import Updater
 

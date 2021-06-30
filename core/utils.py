@@ -9,6 +9,7 @@ from typing import Any, Awaitable, Optional, Tuple, TypeVar
 from zipfile import ZipFile
 
 from core.clients.codexffmpeg import ByteResponse
+from core.exceptions import CommandError
 
 
 def response_to_zip(data: ByteResponse, filename: str = None) -> ZipFile:
@@ -48,7 +49,7 @@ async def get_stdout(cmd: str, log: logging.Logger = None, raise_on_stderr: bool
     if stderr:
         log.warning('[stderr] %s', stderr.decode())
         if raise_on_stderr:
-            raise Exception(stderr)
+            raise CommandError(stderr)
     return stdout.decode()
 
 

@@ -1,6 +1,8 @@
 """Constants Module."""
 
-LOG_FORMAT_DEBUG = '%(asctime)s %(module)-11s %(name)-25s %(funcName)-22s %(levelname)-8s %(message)s'
+import enum
+
+LOG_FORMAT_DEBUG = '%(asctime)s %(module)-11s %(name)-25s %(funcName)-23s %(levelname)-8s %(message)s'
 LOG_FORMAT_INFO = '%(name)-25s %(levelname)-8s %(message)s'
 
 LOG_MAP = {
@@ -12,7 +14,7 @@ LOG_MAP = {
 
 
 class FfmpegLinkingType:
-    """ffmpeg linking types."""
+    """FFmpeg linking types."""
 
     STATIC = 'static'
     SHARED = 'shared'
@@ -71,7 +73,18 @@ DEF_EXTRACT_PATH = r'C:\youtube-dl'
 EXE_YTDL = 'youtube-dl.exe'
 URL_YTDL = f'https://youtube-dl.org/downloads/latest/{EXE_YTDL}'
 
-REQUIRED_FFBINARIES = ('ffmpeg.exe', 'ffprobe.exe', 'ffplay.exe')
+
+@enum.unique
+class RequiredFfbinaries(enum.Enum):
+    FFMPEG = 'ffmpeg.exe'
+    FFPROBE = 'ffprobe.exe'
+    FFPLAY = 'ffplay.exe'
+
+    @classmethod
+    def choices(cls):
+        return frozenset(member.value for member in cls)
+
+
 FFMPEG_NUM_REGEX = r'(([0-9]+\.?)+)'
 
 PLATFORMS = {

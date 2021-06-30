@@ -10,7 +10,7 @@ from core.managers import TaskManager
 
 
 class Updater:
-    """Updater Class."""
+    """Main updater class."""
 
     def __init__(self, settings: Namespace):
         self._log = logging.getLogger(self.__class__.__name__)
@@ -19,11 +19,10 @@ class Updater:
         self._task_manager = TaskManager(self._settings)
 
     async def run(self) -> None:
-        """Start Update."""
+        """Start update tasks."""
         self._log.info('Starting%s update', ' force' if self._settings.force else '')
         self._check_path_existence(self._settings.destination)
-        task_group = asyncio.gather(*self._task_manager.create_tasks(), return_exceptions=True)
-        await task_group
+        await asyncio.gather(*self._task_manager.create_tasks(), return_exceptions=True)
         self._log.info('%spdate finished', 'Force u' if self._settings.force else 'U')
 
     def _check_path_existence(self, path: str) -> None:

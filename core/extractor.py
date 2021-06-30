@@ -1,48 +1,43 @@
 """Zip Extractor module."""
-import abc
-import asyncio
+
 import logging
 import os
-from zipfile import ZipFile
 
-from core.constants import REQUIRED_FFBINARIES
-from core.exceptions import NoFileToExtractError
-from core.tasks.extract import ZipExtractTask
+import aiofiles
+
+from core.constants import RequiredFfbinaries
 
 
-class AbstractZipExtractor(abc.ABC):
-    def __init__(self):
+class ZipStreamExtractor:
+    """Stream FFmpeg binaries chunk extractor."""
+
+    def __init__(self, settings):
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %s', self.__class__.__name__)
+        self._settings = settings
 
-    @abc.abstractmethod
-    async def extract(self, zip_file: ZipFile, dest: str):
-        pass
-
-    @abc.abstractmethod
-    def _get_extract_coros(self, zip_file: ZipFile, dest: str):
-        pass
-
-
-class ZipExtractor(AbstractZipExtractor):
-
-    async def extract(self, zip_file: ZipFile, dest: str):
-        """Extract downloaded ffmpeg binaries zip archive."""
-        extract_coroutines = self._get_extract_coros(zip_file, dest)
-        if not extract_coroutines:
-            err_msg = 'No files found to extract'
-            self._log.error(err_msg)
-            raise NoFileToExtractError(err_msg)
-        await asyncio.gather(*extract_coroutines)
-
-    def _get_extract_coros(self, zip_file: ZipFile, dest: str) -> list:
-        extract_coroutines = []
-        for member in zip_file.namelist():
+    async def process_zip_stream(self, stream_generator):
+        """Process stream chunks and write found FFmpeg binaries on the fly."""
+        ffbinaries = RequiredFfbinaries.choices()
+        written_files_count, ffbinaries_count = 0, len(ffbinaries)
+        async for member, file_size, unzipped_chunks in stream_generator:
+            member = member.decode()
             filename = os.path.basename(member)
-            if not filename or filename not in REQUIRED_FFBINARIES:
-                self._log.debug('[%s] Skip %s', zip_file.filename, member)
+
+            if filename not in ffbinaries:
+                self._log.debug('Skip %s', member)
+                async for _ in unzipped_chunks:
+                    # Go through chunks for unneeded files in zip-archive and throw them out.
+                    pass
                 continue
 
-            context = {'member': member, 'dest': dest, 'filename': filename}
-            extract_coroutines.append(ZipExtractTask(zip_file, context).extract())
-        return extract_coroutines
+            file_path = os.path.join(self._settings.destination, filename)
+            self._log.debug('Write file %s', file_path)
+            async with aiofiles.open(file_path, 'wb') as fd_out:
+                async for chunk in unzipped_chunks:
+                    await fd_out.write(chunk)
+
+            written_files_count += 1
+            if written_files_count == ffbinaries_count:
+                self._log.debug('All ffbinaries updated, done zip stream process')
+                break
