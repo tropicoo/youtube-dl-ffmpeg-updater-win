@@ -16,7 +16,9 @@ def response_to_zip(data: ByteResponse, filename: str = None) -> ZipFile:
     """Create zip-like file object from `requests` response and set its real filename."""
     zip_obj = ZipFile(data.bytes_data)
     if not filename:
-        filename = get_filename_from_header(data.headers) or get_filename_from_url(data.url)
+        filename = get_filename_from_header(data.headers) or get_filename_from_url(
+            data.url
+        )
     zip_obj.filename = filename
     return zip_obj
 
@@ -35,13 +37,14 @@ def get_largest_value(items: list, strict=True) -> str:
     return str(max([conv_cls(x) for x in items]))
 
 
-async def get_stdout(cmd: str, log: logging.Logger = None, raise_on_stderr: bool = False) -> str:
+async def get_stdout(
+    cmd: str, log: logging.Logger = None, raise_on_stderr: bool = False
+) -> str:
     if not log:
         log = logging.getLogger()
     proc = await asyncio.create_subprocess_shell(
-        cmd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE)
+        cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+    )
 
     stdout, stderr = await proc.communicate()
 
@@ -57,29 +60,34 @@ T = TypeVar('T')
 
 
 def create_task(
-        coroutine: Awaitable[T],
-        *,
-        logger: logging.Logger,
-        task_name: str = None,
-        exception_message: str = 'Task raised an exception',
-        exception_message_args: Tuple[Any, ...] = (),
-        loop: Optional[asyncio.AbstractEventLoop] = None,
+    coroutine: Awaitable[T],
+    *,
+    logger: logging.Logger,
+    task_name: str = None,
+    exception_message: str = 'Task raised an exception',
+    exception_message_args: Tuple[Any, ...] = (),
+    loop: Optional[asyncio.AbstractEventLoop] = None,
 ) -> asyncio.Task[T]:
     if loop is None:
         loop = asyncio.get_running_loop()
     task = loop.create_task(coroutine, name=task_name)
     task.add_done_callback(
-        functools.partial(_handle_task_result, logger=logger, exception_message=exception_message,
-                          exception_message_args=exception_message_args))
+        functools.partial(
+            _handle_task_result,
+            logger=logger,
+            exception_message=exception_message,
+            exception_message_args=exception_message_args,
+        )
+    )
     return task
 
 
 def _handle_task_result(
-        task: asyncio.Task,
-        *,
-        logger: logging.Logger,
-        exception_message: str,
-        exception_message_args: Tuple[Any, ...] = (),
+    task: asyncio.Task,
+    *,
+    logger: logging.Logger,
+    exception_message: str,
+    exception_message_args: Tuple[Any, ...] = (),
 ) -> None:
     try:
         task.result()

@@ -39,7 +39,7 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
                 to_yield = min(len(chunk) - offset, chunk_size)
                 offset = (offset + to_yield) % len(chunk)
                 chunk = chunk if offset else b''
-                yield prev_chunk[prev_offset:prev_offset + to_yield]
+                yield prev_chunk[prev_offset : prev_offset + to_yield]
 
         async def _yield_num(num):
             nonlocal chunk
@@ -58,7 +58,7 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
                 offset = (offset + to_yield) % len(chunk)
                 chunk = chunk if offset else b''
                 num -= to_yield
-                yield prev_chunk[prev_offset:prev_offset + to_yield]
+                yield prev_chunk[prev_offset : prev_offset + to_yield]
 
         async def _get_num(num):
             return b''.join([chunk async for chunk in _yield_num(num)])
@@ -74,23 +74,39 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
 
         return _yield_all, _yield_num, _get_num, _return_unused
 
-    yield_all, yield_num, get_num, return_unused = await get_byte_readers(zipfile_chunks)
+    yield_all, yield_num, get_num, return_unused = await get_byte_readers(
+        zipfile_chunks
+    )
 
     def get_extra_data(extra, desired_signature):
         extra_offset = 0
         while extra_offset != len(extra):
-            extra_signature = extra[extra_offset:extra_offset + 2]
+            extra_signature = extra[extra_offset : extra_offset + 2]
             extra_offset += 2
-            extra_data_size, = Struct('<H').unpack(extra[extra_offset:extra_offset + 2])
+            (extra_data_size,) = Struct('<H').unpack(
+                extra[extra_offset : extra_offset + 2]
+            )
             extra_offset += 2
-            extra_data = extra[extra_offset:extra_offset + extra_data_size]
+            extra_data = extra[extra_offset : extra_offset + extra_data_size]
             extra_offset += extra_data_size
             if extra_signature == desired_signature:
                 return extra_data
 
     async def yield_file():
-        version, flags, compression, mod_time, mod_date, crc_32_expected, compressed_size, uncompressed_size, file_name_len, extra_field_len = \
-            local_file_header_struct.unpack(await get_num(local_file_header_struct.size))
+        (
+            version,
+            flags,
+            compression,
+            mod_time,
+            mod_date,
+            crc_32_expected,
+            compressed_size,
+            uncompressed_size,
+            file_name_len,
+            extra_field_len,
+        ) = local_file_header_struct.unpack(
+            await get_num(local_file_header_struct.size)
+        )
 
         if compression not in [0, 8]:
             raise ValueError('Unsupported compression type {}'.format(compression))
@@ -102,21 +118,25 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
 
         flag_bits = tuple(_flag_bits())
         if (
-                flag_bits[0]  # Encrypted
-                or flag_bits[4]  # Enhanced deflate (Deflate64)
-                or flag_bits[5]  # Compressed patched
-                or flag_bits[6]  # Strong encrypted
-                or flag_bits[13]  # Masked header values
+            flag_bits[0]  # Encrypted
+            or flag_bits[4]  # Enhanced deflate (Deflate64)
+            or flag_bits[5]  # Compressed patched
+            or flag_bits[6]  # Strong encrypted
+            or flag_bits[13]  # Masked header values
         ):
             raise ValueError('Unsupported flags {}'.format(flag_bits))
 
         file_name = await get_num(file_name_len)
         extra = await get_num(extra_field_len)
 
-        is_zip64 = compressed_size == zip64_compressed_size and uncompressed_size == zip64_compressed_size
+        is_zip64 = (
+            compressed_size == zip64_compressed_size
+            and uncompressed_size == zip64_compressed_size
+        )
         if is_zip64:
             uncompressed_size, compressed_size = Struct('<QQ').unpack(
-                get_extra_data(extra, zip64_size_signature))
+                get_extra_data(extra, zip64_size_signature)
+            )
 
         has_data_descriptor = flags == b'\x08\x00'
 
@@ -143,7 +163,9 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
                     yield uncompressed_chunk
 
                 while dobj.unconsumed_tail and not dobj.eof:
-                    uncompressed_chunk = dobj.decompress(dobj.unconsumed_tail, chunk_size)
+                    uncompressed_chunk = dobj.decompress(
+                        dobj.unconsumed_tail, chunk_size
+                    )
                     if uncompressed_chunk:
                         crc_32_actual = zlib.crc32(uncompressed_chunk, crc_32_actual)
                         yield uncompressed_chunk
@@ -152,15 +174,13 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
 
             if has_data_descriptor:
                 dd_optional_signature = await get_num(4)
-                dd_so_far_num = \
-                    0 if dd_optional_signature == b'PK\x07\x08' else \
-                        4
+                dd_so_far_num = 0 if dd_optional_signature == b'PK\x07\x08' else 4
                 dd_so_far = dd_optional_signature[:dd_so_far_num]
-                dd_remaining = \
-                    (20 - dd_so_far_num) if is_zip64 else \
-                        (12 - dd_so_far_num)
+                dd_remaining = (
+                    (20 - dd_so_far_num) if is_zip64 else (12 - dd_so_far_num)
+                )
                 dd = dd_so_far + await get_num(dd_remaining)
-                crc_32_expected, = Struct('<I').unpack(dd[:4])
+                (crc_32_expected,) = Struct('<I').unpack(dd[:4])
 
             if crc_32_actual != crc_32_expected:
                 raise ValueError('CRC-32 does not match')
@@ -174,9 +194,11 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
             if crc_32_actual != crc_32_expected:
                 raise ValueError('CRC-32 does not match')
 
-        uncompressed_bytes = \
-            _with_crc_32_check(yield_num(compressed_size)) if compression == 0 else \
-                _decompress_deflate()
+        uncompressed_bytes = (
+            _with_crc_32_check(yield_num(compressed_size))
+            if compression == 0
+            else _decompress_deflate()
+        )
 
         return file_name, uncompressed_size, uncompressed_bytes
 

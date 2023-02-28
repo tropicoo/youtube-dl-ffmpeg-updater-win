@@ -8,13 +8,15 @@ from typing import Optional
 
 from core.clients.abstract import AbstractApiClient
 from core.clients.codexffmpeg import CodexFFAPIClient
-from core.constants import CMD_FFMPEG_VERSION, FFMPEG_NUM_REGEX, RequiredFfbinaries
+from core.constants import (
+    CMD_FFMPEG_VERSION, FFMPEG_NUM_REGEX, FFSource,
+    RequiredFfbinaries,
+)
 from core.utils import get_stdout
 
 
 class AbstractUpdaterTask(abc.ABC):
-
-    def __init__(self, api_client: AbstractApiClient, settings: Namespace):
+    def __init__(self, api_client: AbstractApiClient, settings: Namespace) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %s', self.__class__.__name__)
         self._api = api_client
@@ -35,8 +37,7 @@ class AbstractUpdaterTask(abc.ABC):
 
 
 class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, abc.ABC):
-
-    type: str = None
+    type: FFSource
     _api: CodexFFAPIClient
 
     @abc.abstractmethod
@@ -56,12 +57,20 @@ class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, abc.ABC):
         if self._settings.force or not self._all_ffbinaries_exist():
             return True
 
-        latest_version, local_version = await asyncio.gather(self._api.get_latest_version(),
-                                                             self._get_local_version())
-        self._log.debug('Local FFmpeg version "%s", latest version "%s"', local_version, latest_version)
+        latest_version, local_version = await asyncio.gather(
+            self._api.get_latest_version(), self._get_local_version()
+        )
+        self._log.debug(
+            'Local FFmpeg version "%s", latest version "%s"',
+            local_version,
+            latest_version,
+        )
         if latest_version != local_version:
-            self._log.info('Local FFmpeg build version %s needs update to %s',
-                           local_version, latest_version)
+            self._log.info(
+                'Local FFmpeg build version %s needs update to %s',
+                local_version,
+                latest_version,
+            )
             return True
         return False
 
@@ -73,14 +82,18 @@ class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, abc.ABC):
     async def _get_local_version(self) -> Optional[str]:
         """Get local FFmpeg build numerical build version."""
         ffmpeg_ver = None
-        bin_path = os.path.join(self._settings.destination, RequiredFfbinaries.FFMPEG.value)
+        bin_path = os.path.join(
+            self._settings.destination, RequiredFfbinaries.FFMPEG.value
+        )
         cmd = CMD_FFMPEG_VERSION.format(bin_path=bin_path)
         try:
             ffmpeg_ver = await get_stdout(cmd, self._log)
             ffmpeg_ver = ffmpeg_ver.splitlines()[0]
             ffmpeg_ver = re.search(FFMPEG_NUM_REGEX, ffmpeg_ver).group()
         except FileNotFoundError:
-            self._log.warning('Local FFmpeg build not found, will proceed with download')
+            self._log.warning(
+                'Local FFmpeg build not found, will proceed with download'
+            )
         except OSError as err:
             self._log.warning('Error getting local FFmpeg build version: %s', err)
         return ffmpeg_ver

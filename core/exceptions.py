@@ -7,6 +7,7 @@ class BaseUpdaterError(Exception):
 
 class UpdaterError(BaseUpdaterError):
     """Updater Base Exception Class."""
+
     pass
 
 

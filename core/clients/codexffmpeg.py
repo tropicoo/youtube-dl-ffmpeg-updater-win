@@ -48,9 +48,11 @@ class CodexFFAPIClient(AbstractApiClient):
     async def get_next_build_date(self) -> str:
         return await self._get_text(self.BUILDS_URL + CodexApiPath.NEXT_BUILD_UPDATE)
 
-    async def download_latest_version(self,
-                                      release_type: str = CodexReleaseType.RELEASE,
-                                      build_type: str = CodexBuildType.ESSENTIALS):
+    async def download_latest_version(
+        self,
+        release_type: str = CodexReleaseType.RELEASE,
+        build_type: str = CodexBuildType.ESSENTIALS,
+    ):
         async def zipped_chunks_generator():
             """Async zip archive chunks generator."""
             zip_filename = self._make_archive_filename(release_type, build_type)
@@ -62,11 +64,14 @@ class CodexFFAPIClient(AbstractApiClient):
                     yield chunk
                 self._log.debug('End download %s', zip_filename)
 
-        async for filename, file_size, unzipped_chunks in stream_unzip(zipped_chunks_generator()):
+        async for filename, file_size, unzipped_chunks in stream_unzip(
+            zipped_chunks_generator()
+        ):
             yield filename, file_size, unzipped_chunks
 
     @staticmethod
-    def _make_archive_filename(release_type: str, build_type: str,
-                               extension: str = CodexArchExtension.ZIP) -> str:
+    def _make_archive_filename(
+        release_type: str, build_type: str, extension: str = CodexArchExtension.ZIP
+    ) -> str:
         """Make zip archive filename to append to download url."""
         return f'ffmpeg-{release_type}-{build_type}.{extension}'

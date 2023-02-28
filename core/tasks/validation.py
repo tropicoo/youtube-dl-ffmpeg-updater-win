@@ -5,8 +5,7 @@ from core.utils import get_stdout
 
 
 class FFmpegBinValidationTask(abc.ABC):
-
-    def __init__(self):
+    def __init__(self) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
 
     async def validate(self, bin_path: str) -> None:

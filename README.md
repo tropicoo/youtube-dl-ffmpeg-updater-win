@@ -1,11 +1,24 @@
 # youtube-dl and ffmpeg binaries updater for Windows OS
 
-Updates youtube-dl.exe and ffmpeg binaries (ffmpeg.exe, ffplay.exe and ffprobe.exe) from Codex FFmpeg builds (https://www.gyan.dev/ffmpeg/builds)
+Updates `youtube-dl.exe` and ffmpeg binaries (`ffmpeg.exe`, `ffplay.exe`
+and `ffprobe.exe`) from Codex FFmpeg builds (https://www.gyan.dev/ffmpeg/builds)
 with their latest versions.
 
-## Example output
+## Requirements
+
+[Python 3.10+](https://www.python.org/downloads)
+
+## Installation
+
 ```
-> python updater.py -f -p win64 -v3
+git clone https://github.com/tropicoo/youtube-dl-ffmpeg-updater-win.git
+pip3 install -r requirements.txt
+```
+
+## Usage
+
+```bash
+> python updater.py --force --platform win64 --verbose 3
 
 2021-07-01 19:52:08,937 updater     Updater                   __init__                DEBUG    Initializing Updater
 2021-07-01 19:52:08,938 managers    TaskManager               __init__                DEBUG    Initializing TaskManager
@@ -41,16 +54,22 @@ with their latest versions.
 2021-07-01 19:52:24,480 updater     Updater                   run                     INFO     Force update finished
 ```
 
-## Requirements
-Python 3.7+.
+## Misc
 
-## Installation
+Easily run as batch file `youtube-dl updater.bat` on Windows.
+
 ```
-git clone https://github.com/tropicoo/youtube-dl-ffmpeg-updater-win.git
-pip3 install -r requirements.txt
+:: Content of file "youtube-dl updater.bat"
+
+@echo off
+
+python3 <absolute_path_to_updater.py> --platform win64 --verbose 3
+
+pause
 ```
 
-## Usage
+## Help
+
 ```
 > python updater.py -h
 
@@ -71,17 +90,4 @@ optional arguments:
                         ffmpeg binaries source, currently supported only from codex
   -v [{0,1,2,3}], --verbose [{0,1,2,3}]
                         log level 0-3, default 2
-```
-
-## Misc
-Easily run as batch file on Windows.
-
-```
-:: Content of file "youtube-dl updater.bat"
-
-@echo off
-
-python3 <absolute_path_to_updater.py> -f -p win64 -v3
-
-pause
 ```

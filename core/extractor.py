@@ -5,7 +5,6 @@ import logging
 import os
 
 import aiofiles
-
 from core.constants import RequiredFfbinaries
 from core.tasks.validation import FFmpegBinValidationTask
 from core.utils import create_task
@@ -14,13 +13,13 @@ from core.utils import create_task
 class ZipStreamExtractor:
     """Stream FFmpeg binaries chunk extractor."""
 
-    def __init__(self, settings):
+    def __init__(self, settings) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %s', self.__class__.__name__)
         self._settings = settings
         self._validation_tasks = []
 
-    async def process_zip_stream(self, stream_generator):
+    async def process_zip_stream(self, stream_generator) -> None:
         """Process stream chunks, write FFmpeg binaries on the fly and fire up validation tasks."""
         ffbinaries = RequiredFfbinaries.choices()
         written_files_count, ffbinaries_count = 0, len(ffbinaries)
@@ -42,7 +41,7 @@ class ZipStreamExtractor:
         await asyncio.gather(*self._validation_tasks)
         self._log.debug('All ffbinaries updated, done zip stream process')
 
-    async def _write_file(self, filename, unzipped_chunks):
+    async def _write_file(self, filename, unzipped_chunks) -> None:
         """Write unzipped chunks into file."""
         file_path = os.path.join(self._settings.destination, filename)
         self._log.debug('Write file %s', file_path)
@@ -51,7 +50,7 @@ class ZipStreamExtractor:
                 await fd_out.write(chunk)
         self._start_validation_task(file_path)
 
-    def _start_validation_task(self, file_path):
+    def _start_validation_task(self, file_path) -> None:
         """Spawn exe validation task."""
         self._validation_tasks.append(
             create_task(
@@ -60,4 +59,5 @@ class ZipStreamExtractor:
                 logger=self._log,
                 exception_message='Task %s raised an exception',
                 exception_message_args=(FFmpegBinValidationTask.__name__,),
-            ))
+            )
+        )
