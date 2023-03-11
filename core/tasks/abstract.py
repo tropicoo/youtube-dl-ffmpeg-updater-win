@@ -3,20 +3,18 @@ import asyncio
 import logging
 import os
 import re
-from argparse import Namespace
 from typing import Optional
 
 from core.clients.abstract import AbstractApiClient
 from core.clients.codexffmpeg import CodexFFAPIClient
-from core.constants import (
-    CMD_FFMPEG_VERSION, FFMPEG_NUM_REGEX, FFSource,
-    RequiredFfbinaries,
-)
+from core.constants import CMD_FFMPEG_VERSION, FFMPEG_NUM_REGEX
+from core.enums import FFSource, RequiredFfbinaries
+from core.settings import Settings
 from core.utils import get_stdout
 
 
 class AbstractUpdaterTask(abc.ABC):
-    def __init__(self, api_client: AbstractApiClient, settings: Namespace) -> None:
+    def __init__(self, api_client: AbstractApiClient, settings: Settings) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %s', self.__class__.__name__)
         self._api = api_client

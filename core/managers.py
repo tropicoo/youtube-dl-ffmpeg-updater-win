@@ -1,12 +1,12 @@
 """Managers Module."""
 
 import logging
-from argparse import Namespace
 from asyncio import Task
 
-from core.constants import UpdaterComponent
+from core.enums import UpdaterComponent
+from core.settings import Settings
 from core.tasks.codex import CodexFfmpegUpdaterTask
-from core.tasks.ytdl import YTDLUpdaterTask
+from core.tasks.youtube_dl import YTDLUpdaterTask
 from core.utils import create_task
 
 
@@ -17,7 +17,7 @@ class TaskManager:
         UpdaterComponent.YTDL: (YTDLUpdaterTask,),
     }
 
-    def __init__(self, settings: Namespace) -> None:
+    def __init__(self, settings: Settings) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %s', self.__class__.__name__)
         self._settings = settings

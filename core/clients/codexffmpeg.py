@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from io import BytesIO
 
 from core.clients.abstract import AbstractApiClient
-from core.constants import CHUNK_SIZE, CodexBuildType, CodexReleaseType
+from core.constants import CHUNK_SIZE
+from core.enums import CodexBuildType, CodexReleaseType
 from core.third_party.stream_unzip import stream_unzip
 
 

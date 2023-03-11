@@ -2,7 +2,8 @@
 
 import logging
 
-from core.constants import LOG_MAP, LogLevel
+from core.constants import LOG_MAP
+from core.enums import LogLevel
 
 
 def init_logging(

@@ -3,6 +3,7 @@ import logging
 import os
 
 import aiofiles
+
 from core.clients.ytdl import YTDLApiClient
 from core.constants import CMD_YOUTUBE_DL_UPDATE, EXE_YTDL
 from core.exceptions import CommandError
@@ -11,7 +12,7 @@ from core.utils import get_stdout
 
 
 class AbstractYTDLUpdater(abc.ABC):
-    name: str
+    NAME: str
 
     def __init__(self, settings) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
@@ -24,7 +25,7 @@ class AbstractYTDLUpdater(abc.ABC):
         self._log.info('youtube-dl updated to version %s', version.strip())
 
     async def update(self) -> None:
-        self._log.info('Updating by %s', self.name)
+        self._log.info('Updating by %s', self.NAME)
         await self._update()
 
     @abc.abstractmethod
@@ -33,7 +34,7 @@ class AbstractYTDLUpdater(abc.ABC):
 
 
 class YTDLWebUpdater(AbstractYTDLUpdater):
-    name = 'youtube-dl web updater'
+    NAME = 'youtube-dl web updater'
 
     def __init__(self, settings, api_client) -> None:
         super().__init__(settings)
@@ -49,7 +50,7 @@ class YTDLWebUpdater(AbstractYTDLUpdater):
 
 
 class YTDLSubprocessUpdater(AbstractYTDLUpdater):
-    name = 'youtube-dl subprocess updater'
+    NAME = 'youtube-dl subprocess updater'
 
     async def _update(self) -> None:
         """Update youtube-dl by subprocess call."""

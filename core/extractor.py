@@ -5,7 +5,8 @@ import logging
 import os
 
 import aiofiles
-from core.constants import RequiredFfbinaries
+
+from core.enums import RequiredFfbinaries
 from core.tasks.validation import FFmpegBinValidationTask
 from core.utils import create_task
 

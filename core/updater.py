@@ -3,18 +3,21 @@
 import asyncio
 import logging
 import os
-from argparse import Namespace
 
 from core.exceptions import UpdaterError
 from core.managers import TaskManager
+from core.settings import Settings
+from core.version import __version__
 
 
 class Updater:
     """Main updater class."""
 
-    def __init__(self, settings: Namespace) -> None:
+    def __init__(self, settings: Settings) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
-        self._log.debug('Initializing %s', self.__class__.__name__)
+        self._log.info(
+            'Initializing %s version %s', self.__class__.__name__, __version__
+        )
         self._settings = settings
         self._task_manager = TaskManager(self._settings)
 
