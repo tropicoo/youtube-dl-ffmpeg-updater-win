@@ -6,7 +6,7 @@ import re
 from typing import Optional
 
 from core.clients.abstract import AbstractApiClient
-from core.clients.codexffmpeg import CodexFFAPIClient
+from core.clients.codexffmpeg import AbstractCodexFFAPIClient
 from core.constants import CMD_FFMPEG_VERSION, FFMPEG_NUM_REGEX
 from core.enums import FFSource, RequiredFfbinaries
 from core.settings import Settings
@@ -36,7 +36,7 @@ class AbstractUpdaterTask(abc.ABC):
 
 class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, abc.ABC):
     type: FFSource
-    _api: CodexFFAPIClient
+    _api: AbstractCodexFFAPIClient
 
     @abc.abstractmethod
     async def _perform_update(self) -> None:

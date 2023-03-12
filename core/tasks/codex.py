@@ -1,5 +1,5 @@
-from core.clients.codexffmpeg import CodexFFAPIClient
-from core.enums import FFSource, WinPlatform
+from core.clients.codexffmpeg import CodexFFAPIClient, CodexFFGithubApiClient
+from core.enums import CodexSource, FFSource, WinPlatform
 from core.extractor import ZipStreamExtractor
 from core.settings import Settings
 from core.tasks.abstract import AbstractFFmpegUpdaterTask
@@ -8,8 +8,14 @@ from core.tasks.abstract import AbstractFFmpegUpdaterTask
 class CodexFfmpegUpdaterTask(AbstractFFmpegUpdaterTask):
     type = FFSource.CODEX
 
+    _API_CLIENT_CLS_MAP = {
+        CodexSource.CODEX: CodexFFAPIClient,
+        CodexSource.GITHUB: CodexFFGithubApiClient,
+    }
+
     def __init__(self, settings: Settings) -> None:
-        super().__init__(api_client=CodexFFAPIClient(), settings=settings)
+        api_client_cls = self._API_CLIENT_CLS_MAP[settings.codex_source]
+        super().__init__(api_client=api_client_cls(), settings=settings)
         self._stream_extractor = ZipStreamExtractor(self._settings)
 
     async def _perform_update(self) -> None:

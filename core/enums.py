@@ -72,3 +72,8 @@ class RequiredFfbinaries(StrEnum):
     @classmethod
     def choices(cls) -> frozenset[str]:
         return frozenset(member.value for member in cls)
+
+
+class CodexSource(StrEnum):
+    GITHUB = 'github'
+    CODEX = 'codex'

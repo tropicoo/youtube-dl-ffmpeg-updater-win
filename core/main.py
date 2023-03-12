@@ -5,7 +5,7 @@ from pathlib import Path
 import typer
 
 from core.constants import DEF_EXTRACT_PATH
-from core.enums import FFSource, LogLevel, UpdaterComponent, WinPlatform
+from core.enums import CodexSource, FFSource, LogLevel, UpdaterComponent, WinPlatform
 from core.log import init_logging
 from core.settings import Settings
 from core.updater import Updater
@@ -39,6 +39,12 @@ def main(
         '--ffmpeg-source',
         help=f'ffmpeg binaries source; currently, only "{FFSource.CODEX}" is supported',
     ),
+    codex_source: CodexSource = typer.Option(
+        CodexSource.GITHUB,
+        '-csrc',
+        '--codex--source',
+        help='codex binaries download source',
+    ),
     verbose: int = typer.Option(
         LogLevel.INFO.value,
         '-v',
@@ -54,6 +60,7 @@ def main(
         platform=platform,
         force=force,
         ffmpeg_source=ffmpeg_source,
+        codex_source=codex_source,
         verbose=LogLevel(verbose),
     )
     init_logging(log_level=settings.verbose)
