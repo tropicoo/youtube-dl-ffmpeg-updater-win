@@ -7,14 +7,14 @@ from core.enums import LogLevel
 
 
 def init_logging(
-    log_level: int, suppress_asyncio: bool = True, suppress_urllib3: bool = True
+    log_level: LogLevel, suppress_asyncio: bool = True, suppress_urllib3: bool = True
 ) -> None:
     """Init logging function. Used for new processes that don't have
     configured `root` logger.
     """
     logging.basicConfig(
         format=LOG_MAP[log_level],
-        level=LogLevel(log_level).name,
+        level=log_level.name,
         datefmt='%Y-%m-%d %H:%M:%S',
         force=True,
     )

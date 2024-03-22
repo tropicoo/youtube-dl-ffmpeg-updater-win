@@ -5,7 +5,7 @@ import functools
 import logging
 import re
 from distutils.version import LooseVersion, StrictVersion
-from typing import Any, Awaitable, Optional, Tuple, TypeVar
+from typing import Any, Awaitable, TypeVar
 from zipfile import ZipFile
 
 from core.clients.codexffmpeg import ByteResponse
@@ -65,8 +65,8 @@ def create_task(
     logger: logging.Logger,
     task_name: str = None,
     exception_message: str = 'Task raised an exception',
-    exception_message_args: Tuple[Any, ...] = (),
-    loop: Optional[asyncio.AbstractEventLoop] = None,
+    exception_message_args: tuple[Any, ...] = (),
+    loop: asyncio.AbstractEventLoop | None = None,
 ) -> asyncio.Task[T]:
     if loop is None:
         loop = asyncio.get_running_loop()
@@ -87,7 +87,7 @@ def _handle_task_result(
     *,
     logger: logging.Logger,
     exception_message: str,
-    exception_message_args: Tuple[Any, ...] = (),
+    exception_message_args: tuple[Any, ...] = (),
 ) -> None:
     try:
         task.result()

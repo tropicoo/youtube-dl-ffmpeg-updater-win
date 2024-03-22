@@ -7,6 +7,7 @@ import os
 import aiofiles
 
 from core.enums import RequiredFfbinaries
+from core.settings import Settings
 from core.tasks.validation import FFmpegBinValidationTask
 from core.utils import create_task
 
@@ -14,7 +15,7 @@ from core.utils import create_task
 class ZipStreamExtractor:
     """Stream FFmpeg binaries chunk extractor."""
 
-    def __init__(self, settings) -> None:
+    def __init__(self, settings: Settings) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %s', self.__class__.__name__)
         self._settings = settings
@@ -42,7 +43,7 @@ class ZipStreamExtractor:
         await asyncio.gather(*self._validation_tasks)
         self._log.debug('All ffbinaries updated, done zip stream process')
 
-    async def _write_file(self, filename, unzipped_chunks) -> None:
+    async def _write_file(self, filename: str, unzipped_chunks) -> None:
         """Write unzipped chunks into file."""
         file_path = os.path.join(self._settings.destination, filename)
         self._log.debug('Write file %s', file_path)
@@ -51,7 +52,7 @@ class ZipStreamExtractor:
                 await fd_out.write(chunk)
         self._start_validation_task(file_path)
 
-    def _start_validation_task(self, file_path) -> None:
+    def _start_validation_task(self, file_path: str) -> None:
         """Spawn exe validation task."""
         self._validation_tasks.append(
             create_task(

@@ -1,17 +1,24 @@
 """Constants Module."""
 
-from enum import IntEnum, StrEnum, unique
+from enum import Enum, IntEnum, StrEnum
 
 
-@unique
+class BaseChoiceEnum(Enum):
+    @classmethod
+    def choices(cls) -> frozenset[str]:
+        return frozenset(member.value for member in cls)
+
+
 class LogLevel(IntEnum):
+    """Log Level Name to Verbosity level."""
+
     ERROR = 0
     WARNING = 1
     INFO = 2
     DEBUG = 3
 
 
-class FfmpegLinkingType(StrEnum):
+class FfmpegLinkingType(BaseChoiceEnum, StrEnum):
     """FFmpeg linking types."""
 
     STATIC = 'static'
@@ -19,7 +26,7 @@ class FfmpegLinkingType(StrEnum):
     DEV = 'dev'
 
 
-class HTTPMethods(StrEnum):
+class HTTPMethods(BaseChoiceEnum, StrEnum):
     """HTTP Methods Class."""
 
     GET = 'GET'
@@ -29,51 +36,46 @@ class HTTPMethods(StrEnum):
     DELETE = 'DELETE'
 
 
-class UpdaterComponent(StrEnum):
+class UpdaterComponent(BaseChoiceEnum, StrEnum):
     ALL = 'all'
     FFMPEG = 'ffmpeg'
     YTDL = 'ytdl'
 
 
-class WinPlatform(StrEnum):
+class WinPlatform(BaseChoiceEnum, StrEnum):
     """Windows platform types."""
 
     WIN32 = 'win32'
     WIN64 = 'win64'
 
 
-class FFReleaseChannel(StrEnum):
+class FFReleaseChannel(BaseChoiceEnum, StrEnum):
     DEV = 'dev'
     RELEASE = 'release'
 
 
-class FFSource(StrEnum):
+class FFSource(BaseChoiceEnum, StrEnum):
     CODEX = 'codex'
     FFBINARIES = 'ffbinaries'
 
 
-class CodexReleaseType(StrEnum):
+class CodexReleaseType(BaseChoiceEnum, StrEnum):
     GIT = 'git'
     RELEASE = 'release'
     TOOLS = 'tools'
 
 
-class CodexBuildType(StrEnum):
+class CodexBuildType(BaseChoiceEnum, StrEnum):
     ESSENTIALS = 'essentials'
     FULL = 'full'
 
 
-@unique
-class RequiredFfbinaries(StrEnum):
+class RequiredFfbinaries(BaseChoiceEnum, StrEnum):
     FFMPEG = 'ffmpeg.exe'
     FFPROBE = 'ffprobe.exe'
     FFPLAY = 'ffplay.exe'
 
-    @classmethod
-    def choices(cls) -> frozenset[str]:
-        return frozenset(member.value for member in cls)
 
-
-class CodexSource(StrEnum):
+class CodexSource(BaseChoiceEnum, StrEnum):
     GITHUB = 'github'
     CODEX = 'codex'

@@ -1,4 +1,5 @@
 """Constants Module."""
+
 from core.enums import LogLevel, WinPlatform
 
 LOG_FORMAT_DEBUG = (
@@ -7,10 +8,10 @@ LOG_FORMAT_DEBUG = (
 LOG_FORMAT_INFO = '%(name)-25s %(levelname)-8s %(message)s'
 
 LOG_MAP = {
-    LogLevel.ERROR.value: LOG_FORMAT_INFO,
-    LogLevel.WARNING.value: LOG_FORMAT_INFO,
-    LogLevel.INFO.value: LOG_FORMAT_INFO,
-    LogLevel.DEBUG.value: LOG_FORMAT_DEBUG,
+    LogLevel.ERROR: LOG_FORMAT_INFO,
+    LogLevel.WARNING: LOG_FORMAT_INFO,
+    LogLevel.INFO: LOG_FORMAT_INFO,
+    LogLevel.DEBUG: LOG_FORMAT_DEBUG,
 }
 
 DEF_EXTRACT_PATH = r'C:\youtube-dl'

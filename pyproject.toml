@@ -1,9 +1,9 @@
-[tool.black]
-line-length = 88
-skip-string-normalization = 1
-
 [tool.ruff]
 line-length = 88
-select = ["F", "E", "W", "I001"]
-ignore = ["E501"]  # Skip line length violations
-src = ["core"]
+lint.select = ["F", "E", "W", "I001"]
+lint.ignore = ["E501", "E402"]  # Skip line length violations and module at top level
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "single"
+line-ending = "lf"

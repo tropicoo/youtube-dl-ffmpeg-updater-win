@@ -4,6 +4,9 @@ Updates `youtube-dl.exe` and ffmpeg binaries (`ffmpeg.exe`, `ffplay.exe`
 and `ffprobe.exe`) from Codex FFmpeg builds (https://www.gyan.dev/ffmpeg/builds)
 with their latest versions.
 
+## Version
+Current: 0.4.1
+
 ## Requirements
 
 [Python 3.10+](https://www.python.org/downloads)

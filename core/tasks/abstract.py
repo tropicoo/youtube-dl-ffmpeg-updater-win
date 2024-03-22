@@ -3,7 +3,6 @@ import asyncio
 import logging
 import os
 import re
-from typing import Optional
 
 from core.clients.abstract import AbstractApiClient
 from core.clients.codexffmpeg import AbstractCodexFFAPIClient
@@ -17,7 +16,7 @@ class AbstractUpdaterTask(abc.ABC):
     def __init__(self, api_client: AbstractApiClient, settings: Settings) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %s', self.__class__.__name__)
-        self._api = api_client
+        self._api_client = api_client
         self._settings = settings
 
     async def run(self) -> None:
@@ -27,7 +26,7 @@ class AbstractUpdaterTask(abc.ABC):
             await self._cleanup()
 
     async def _cleanup(self) -> None:
-        await self._api.close_session()
+        await self._api_client.close_session()
 
     @abc.abstractmethod
     async def _update(self) -> None:
@@ -36,7 +35,7 @@ class AbstractUpdaterTask(abc.ABC):
 
 class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, abc.ABC):
     type: FFSource
-    _api: AbstractCodexFFAPIClient
+    _api_client: AbstractCodexFFAPIClient
 
     @abc.abstractmethod
     async def _perform_update(self) -> None:
@@ -56,7 +55,7 @@ class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, abc.ABC):
             return True
 
         latest_version, local_version = await asyncio.gather(
-            self._api.get_latest_version(), self._get_local_version()
+            self._api_client.get_latest_version(), self._get_local_version()
         )
         self._log.debug(
             'Local FFmpeg version "%s", latest version "%s"',
@@ -77,7 +76,7 @@ class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, abc.ABC):
         files = os.listdir(self._settings.destination)
         return len(set(files) & RequiredFfbinaries.choices()) == len(RequiredFfbinaries)
 
-    async def _get_local_version(self) -> Optional[str]:
+    async def _get_local_version(self) -> str | None:
         """Get local FFmpeg build numerical build version."""
         ffmpeg_ver = None
         bin_path = os.path.join(
