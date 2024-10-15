@@ -4,9 +4,11 @@ import asyncio
 import functools
 import logging
 import re
-from distutils.version import LooseVersion, StrictVersion
-from typing import Any, Awaitable, TypeVar
+from collections.abc import Awaitable
+from typing import Any, TypeVar
 from zipfile import ZipFile
+
+from distutils.version import LooseVersion, StrictVersion
 
 from core.clients.codexffmpeg import ByteResponse
 from core.exceptions import CommandError
@@ -32,13 +34,13 @@ def get_filename_from_url(url: str) -> str:
     return url.rsplit('/', 1)[-1]
 
 
-def get_largest_value(items: list, strict=True) -> str:
+def get_largest_value(items: list, strict: bool = True) -> str:
     conv_cls = StrictVersion if strict else LooseVersion
     return str(max([conv_cls(x) for x in items]))
 
 
 async def get_stdout(
-    cmd: str, log: logging.Logger = None, raise_on_stderr: bool = False
+    cmd: str, log: logging.Logger | None = None, raise_on_stderr: bool = False
 ) -> str:
     if not log:
         log = logging.getLogger()
@@ -63,7 +65,7 @@ def create_task(
     coroutine: Awaitable[T],
     *,
     logger: logging.Logger,
-    task_name: str = None,
+    task_name: str | None = None,
     exception_message: str = 'Task raised an exception',
     exception_message_args: tuple[Any, ...] = (),
     loop: asyncio.AbstractEventLoop | None = None,

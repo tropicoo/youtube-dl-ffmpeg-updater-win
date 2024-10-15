@@ -73,7 +73,6 @@ class AbstractCodexFFAPIClient(AbstractApiClient, abc.ABC):
         extension: CodexArchExtension = CodexArchExtension.ZIP,
     ) -> str:
         """Make zip archive filename to append to download url."""
-        pass
 
     @abc.abstractmethod
     async def _make_download_url(self, filename: str, build_version: str) -> str:

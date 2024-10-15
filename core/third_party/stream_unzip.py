@@ -109,7 +109,7 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
         )
 
         if compression not in [0, 8]:
-            raise ValueError('Unsupported compression type {}'.format(compression))
+            raise ValueError(f'Unsupported compression type {compression}')
 
         def _flag_bits():
             for b in flags:
@@ -124,7 +124,7 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
             or flag_bits[6]  # Strong encrypted
             or flag_bits[13]  # Masked header values
         ):
-            raise ValueError('Unsupported flags {}'.format(flag_bits))
+            raise ValueError(f'Unsupported flags {flag_bits}')
 
         file_name = await get_num(file_name_len)
         extra = await get_num(extra_field_len)
