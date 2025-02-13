@@ -5,42 +5,48 @@ from pathlib import Path
 import typer
 
 from core.constants import DEF_EXTRACT_PATH
-from core.enums import CodexSource, FFSource, LogLevel, UpdaterComponent, WinPlatform
+from core.enums import (
+    CodexSourceType,
+    FFSourceType,
+    LogLevel,
+    UpdaterComponentType,
+    WinPlatformType,
+)
 from core.log import init_logging
 from core.settings import Settings
 from core.updater import Updater
 
 
 def main(
-    component: UpdaterComponent = typer.Option(
-        UpdaterComponent.ALL,
+    component: UpdaterComponentType = typer.Option(
+        UpdaterComponentType.ALL,
         '-c',
         '--component',
-        help=f'updater components to update, default {UpdaterComponent.ALL}',
+        help=f'updater components to update, default {UpdaterComponentType.ALL}',
     ),
     destination: Path = typer.Option(
-        Path(DEF_EXTRACT_PATH),
+        DEF_EXTRACT_PATH,
         '-d',
         '--destination',
         exists=True,
         dir_okay=True,
         help='youtube-dl directory path',
     ),
-    platform: WinPlatform = typer.Option(
-        WinPlatform.WIN64,
+    platform: WinPlatformType = typer.Option(
+        WinPlatformType.WIN64,
         '-p',
         '--platform',
         help='ffmpeg binaries os platform',
     ),
     force: bool = typer.Option(False, '-f', '--force', help='perform force update'),
-    ffmpeg_source: FFSource = typer.Option(
-        FFSource.CODEX,
+    ffmpeg_source: FFSourceType = typer.Option(
+        FFSourceType.CODEX,
         '-fsrc',
         '--ffmpeg-source',
-        help=f'ffmpeg binaries source; currently, only "{FFSource.CODEX}" is supported',
+        help=f'ffmpeg binaries source; currently, only "{FFSourceType.CODEX}" is supported',
     ),
-    codex_source: CodexSource = typer.Option(
-        CodexSource.GITHUB,
+    codex_source: CodexSourceType = typer.Option(
+        CodexSourceType.GITHUB,
         '-csrc',
         '--codex--source',
         help='codex binaries download source',

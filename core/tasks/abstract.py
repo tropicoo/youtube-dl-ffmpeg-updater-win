@@ -1,18 +1,19 @@
-import abc
 import asyncio
 import logging
 import os
 import re
+from abc import ABC, abstractmethod
+
+from clients.codexffmpeg import AbstractCodexFFAPIClient
 
 from core.clients.abstract import AbstractApiClient
-from core.clients.codexffmpeg import AbstractCodexFFAPIClient
 from core.constants import CMD_FFMPEG_VERSION, FFMPEG_NUM_REGEX
-from core.enums import FFSource, RequiredFfbinaries
+from core.enums import FFSourceType, RequiredFfbinaryType
 from core.settings import Settings
 from core.utils import get_stdout
 
 
-class AbstractUpdaterTask(abc.ABC):
+class AbstractUpdaterTask(ABC):
     def __init__(self, api_client: AbstractApiClient, settings: Settings) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %s', self.__class__.__name__)
@@ -28,22 +29,22 @@ class AbstractUpdaterTask(abc.ABC):
     async def _cleanup(self) -> None:
         await self._api_client.close_session()
 
-    @abc.abstractmethod
+    @abstractmethod
     async def _update(self) -> None:
         pass
 
 
-class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, abc.ABC):
-    type: FFSource
+class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, ABC):
+    TYPE: FFSourceType | None = None
     _api_client: AbstractCodexFFAPIClient
 
-    @abc.abstractmethod
+    @abstractmethod
     async def _perform_update(self) -> None:
         pass
 
     async def _update(self) -> None:
         """Update FFmpeg build."""
-        self._log.info('Updating FFmpeg binaries from %s', self.type)
+        self._log.info('Updating FFmpeg binaries from %s', self.TYPE)
         if await self._needs_update():
             await self._perform_update()
         else:
@@ -74,14 +75,14 @@ class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, abc.ABC):
     def _all_ffbinaries_exist(self) -> bool:
         """Check whether all FFmpeg binaries exist on disk."""
         files = os.listdir(self._settings.destination)
-        return len(set(files) & RequiredFfbinaries.choices()) == len(RequiredFfbinaries)
+        return len(set(files) & RequiredFfbinaryType.choices()) == len(
+            RequiredFfbinaryType
+        )
 
     async def _get_local_version(self) -> str | None:
         """Get local FFmpeg build numerical build version."""
-        ffmpeg_ver = None
-        bin_path = os.path.join(
-            self._settings.destination, RequiredFfbinaries.FFMPEG.value
-        )
+        ffmpeg_ver: str | None = None
+        bin_path = os.path.join(self._settings.destination, RequiredFfbinaryType.FFMPEG)
         cmd = CMD_FFMPEG_VERSION.format(bin_path=bin_path)
         try:
             ffmpeg_ver = await get_stdout(cmd, self._log)

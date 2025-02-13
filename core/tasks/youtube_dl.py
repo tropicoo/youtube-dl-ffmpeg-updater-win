@@ -1,6 +1,6 @@
-import abc
 import logging
 import os
+from abc import ABC, abstractmethod
 
 import aiofiles
 
@@ -12,7 +12,7 @@ from core.tasks.abstract import AbstractUpdaterTask
 from core.utils import get_stdout
 
 
-class AbstractYTDLUpdater(abc.ABC):
+class AbstractYTDLUpdater(ABC):
     NAME: str | None = None
 
     def __init__(self, settings: Settings) -> None:
@@ -29,13 +29,13 @@ class AbstractYTDLUpdater(abc.ABC):
         self._log.info('Updating by %s', self.NAME)
         await self._update()
 
-    @abc.abstractmethod
+    @abstractmethod
     async def _update(self) -> None:
         pass
 
 
 class YTDLWebUpdater(AbstractYTDLUpdater):
-    NAME = 'youtube-dl web updater'
+    NAME: str = 'youtube-dl web updater'
 
     def __init__(self, settings: Settings, api_client: YTDLApiClient) -> None:
         super().__init__(settings)
@@ -51,7 +51,7 @@ class YTDLWebUpdater(AbstractYTDLUpdater):
 
 
 class YTDLSubprocessUpdater(AbstractYTDLUpdater):
-    NAME = 'youtube-dl subprocess updater'
+    NAME: str = 'youtube-dl subprocess updater'
 
     async def _update(self) -> None:
         """Update youtube-dl by subprocess call."""

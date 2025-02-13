@@ -8,13 +8,13 @@ from collections.abc import Awaitable
 from typing import Any, TypeVar
 from zipfile import ZipFile
 
+from clients.codexffmpeg import ByteResponse
 from distutils.version import LooseVersion, StrictVersion
 
-from core.clients.codexffmpeg import ByteResponse
 from core.exceptions import CommandError
 
 
-def response_to_zip(data: ByteResponse, filename: str = None) -> ZipFile:
+def response_to_zip(data: ByteResponse, filename: str | None = None) -> ZipFile:
     """Create zip-like file object from `requests` response and set its real filename."""
     zip_obj = ZipFile(data.bytes_data)
     if not filename:

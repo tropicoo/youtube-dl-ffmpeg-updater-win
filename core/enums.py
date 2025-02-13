@@ -1,12 +1,13 @@
 """Constants Module."""
 
-from enum import Enum, IntEnum, StrEnum
+from enum import IntEnum, StrEnum
+from typing import cast
 
 
-class BaseChoiceEnum(Enum):
+class BaseStrChoiceEnum(StrEnum):
     @classmethod
     def choices(cls) -> frozenset[str]:
-        return frozenset(member.value for member in cls)
+        return frozenset(cast(str, member.value) for member in cls)
 
 
 class LogLevel(IntEnum):
@@ -18,64 +19,57 @@ class LogLevel(IntEnum):
     DEBUG = 3
 
 
-class FfmpegLinkingType(BaseChoiceEnum, StrEnum):
-    """FFmpeg linking types."""
-
-    STATIC = 'static'
-    SHARED = 'shared'
-    DEV = 'dev'
-
-
-class HTTPMethods(BaseChoiceEnum, StrEnum):
-    """HTTP Methods Class."""
-
-    GET = 'GET'
-    POST = 'POST'
-    PUT = 'PUT'
-    PATCH = 'PATCH'
-    DELETE = 'DELETE'
-
-
-class UpdaterComponent(BaseChoiceEnum, StrEnum):
+class UpdaterComponentType(BaseStrChoiceEnum):
     ALL = 'all'
     FFMPEG = 'ffmpeg'
     YTDL = 'ytdl'
 
 
-class WinPlatform(BaseChoiceEnum, StrEnum):
+class WinPlatformType(BaseStrChoiceEnum):
     """Windows platform types."""
 
     WIN32 = 'win32'
     WIN64 = 'win64'
 
 
-class FFReleaseChannel(BaseChoiceEnum, StrEnum):
-    DEV = 'dev'
-    RELEASE = 'release'
-
-
-class FFSource(BaseChoiceEnum, StrEnum):
+class FFSourceType(BaseStrChoiceEnum):
     CODEX = 'codex'
     FFBINARIES = 'ffbinaries'
 
 
-class CodexReleaseType(BaseChoiceEnum, StrEnum):
+class CodexReleaseType(BaseStrChoiceEnum):
     GIT = 'git'
     RELEASE = 'release'
     TOOLS = 'tools'
 
 
-class CodexBuildType(BaseChoiceEnum, StrEnum):
+class CodexBuildType(BaseStrChoiceEnum):
     ESSENTIALS = 'essentials'
     FULL = 'full'
 
 
-class RequiredFfbinaries(BaseChoiceEnum, StrEnum):
+class RequiredFfbinaryType(BaseStrChoiceEnum):
     FFMPEG = 'ffmpeg.exe'
     FFPROBE = 'ffprobe.exe'
     FFPLAY = 'ffplay.exe'
 
 
-class CodexSource(BaseChoiceEnum, StrEnum):
+class CodexSourceType(BaseStrChoiceEnum):
     GITHUB = 'github'
     CODEX = 'codex'
+
+
+class CodexApiPathType(BaseStrChoiceEnum):
+    CHANGELOG_COUNTER = 'changelog-counter'
+
+    LATEST_GIT_VER = 'git-version'
+    LATEST_RELEASE_VER = 'release-version'
+    LATEST_TOOLS_VER = 'tools-version'
+
+    LAST_BUILD_UPDATE = 'last-build-update'
+    NEXT_BUILD_UPDATE = 'next-build-update'
+
+
+class CodexArchExtensionType(BaseStrChoiceEnum):
+    ZIP = 'zip'
+    SEVEN_ZIP = '7z'

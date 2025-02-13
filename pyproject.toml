@@ -1,64 +1,53 @@
+[project]
+name = "ffmpeg-updater-win"
+version = "0.4.2"
+description = "youtube-dl and ffmpeg binaries updater for Windows OS"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiofiles>=24.1.0",
+    "aiohttp>=3.11.11",
+    "setuptools>=75.8.0",
+    "typer>=0.15.1",
+]
+
+[dependency-groups]
+lint = [
+    "ruff>=0.9.3",
+]
+
 [tool.ruff]
 line-length = 88
 indent-width = 4
 target-version = "py312"
-required-version = ">=0.6.9"
+required-version = ">=0.9"
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"
 
 [tool.ruff.lint]
-select = [
-    "A",
-    "ANN",
-    "ASYNC",
-    "C4",
-    "C90",
-    "COM",
-    "E",
-    "EM103",
-    "EXE",
-    "F",
-    "FA",
-    "FLY",
-    "FURB",
-    "G",
-    "I",
-    "ICN",
-    "ISC",
-    "LOG",
-    "N",
-    "PERF",
-    "PIE",
-    "PL",
-    "PT",
-    "PTH",
-    "PYI",
-    "Q",
-    "RET",
-    "RSE",
-    "RUF",
-    "S",
-    "SIM",
-    "SLF001",
-    "SLOT",
-    "T20",
-    "TID",
-    "TRY",
-    "UP",
-    "W",
-]
+select = ["ALL"]
 ignore = [
     "ANN002",
     "ANN003",
-    "ANN101",
-    "ANN102",
     "ANN401",
     "ASYNC110",
     "COM812",
+    "D100",
+    "D103",
+    "D107",
     "E501",
+    "EM101",
+    "EM102",
+    "FBT001",
+    "FBT002",
+    "INP001",
     "ISC001",
     "PERF401",
+    "PLR0913",
+    "PTH103",
+    "PTH110",
+    "PTH112",
     "PTH123",
     "RUF012",
     "S110",

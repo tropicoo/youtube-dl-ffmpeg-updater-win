@@ -5,11 +5,11 @@ and `ffprobe.exe`) from Codex FFmpeg builds (https://www.gyan.dev/ffmpeg/builds)
 with their latest versions.
 
 ## Version
-Current: 0.4.1
+Current: 0.4.2
 
 ## Requirements
 
-[Python 3.10+](https://www.python.org/downloads)
+Python 3.12+
 
 ## TODO
  - Replace `youtube-dl` with `yt-dlp` since `youtube-dl` is gone.

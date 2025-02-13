@@ -1,15 +1,15 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from core.enums import CodexSource, FFSource, LogLevel, UpdaterComponent
+from core.enums import CodexSourceType, FFSourceType, LogLevel, UpdaterComponentType
 
 
 @dataclass
 class Settings:
-    component: UpdaterComponent
+    component: UpdaterComponentType
     destination: Path
     platform: str
     force: bool
-    ffmpeg_source: FFSource
-    codex_source: CodexSource
+    ffmpeg_source: FFSourceType
+    codex_source: CodexSourceType
     verbose: LogLevel

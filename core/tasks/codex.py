@@ -1,16 +1,25 @@
-from core.clients.codexffmpeg import CodexFFAPIClient, CodexFFGithubApiClient
-from core.enums import CodexSource, FFSource, WinPlatform
+from typing import ClassVar, Literal
+
+from clients.codexffmpeg import (
+    AbstractCodexFFAPIClient,
+    CodexFFAPIClient,
+    CodexFFGithubApiClient,
+)
+
+from core.enums import CodexSourceType, FFSourceType, WinPlatformType
 from core.extractor import ZipStreamExtractor
 from core.settings import Settings
 from core.tasks.abstract import AbstractFFmpegUpdaterTask
 
 
 class CodexFfmpegUpdaterTask(AbstractFFmpegUpdaterTask):
-    type = FFSource.CODEX
+    TYPE: Literal[FFSourceType.CODEX] = FFSourceType.CODEX
 
-    _API_CLIENT_CLS_MAP = {
-        CodexSource.CODEX: CodexFFAPIClient,
-        CodexSource.GITHUB: CodexFFGithubApiClient,
+    _API_CLIENT_CLS_MAP: ClassVar[
+        dict[CodexSourceType, type[AbstractCodexFFAPIClient]]
+    ] = {
+        CodexSourceType.CODEX: CodexFFAPIClient,
+        CodexSourceType.GITHUB: CodexFFGithubApiClient,
     }
 
     def __init__(self, settings: Settings) -> None:
@@ -19,7 +28,7 @@ class CodexFfmpegUpdaterTask(AbstractFFmpegUpdaterTask):
         self._stream_extractor = ZipStreamExtractor(self._settings)
 
     async def _perform_update(self) -> None:
-        if self._settings.platform != WinPlatform.WIN64:
+        if self._settings.platform != WinPlatformType.WIN64:
             self._log.warning('Codex FFmpeg builds are only 64bit')
         await self._stream_extractor.process_zip_stream(
             self._api_client.download_latest_version()

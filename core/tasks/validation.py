@@ -1,10 +1,10 @@
-import abc
 import logging
+from abc import ABC
 
 from core.utils import get_stdout
 
 
-class FFmpegBinValidationTask(abc.ABC):
+class FFmpegBinValidationTask(ABC):
     def __init__(self) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
 

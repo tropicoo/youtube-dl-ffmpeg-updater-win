@@ -1,12 +1,12 @@
 """API Client Module."""
 
-import abc
 import logging
+from abc import ABC, abstractmethod
 
 from aiohttp import ClientSession, TCPConnector
 
 
-class AbstractApiClient(abc.ABC):
+class AbstractApiClient(ABC):
     def __init__(self) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing %s', self.__class__.__name__)
@@ -25,6 +25,6 @@ class AbstractApiClient(abc.ABC):
         self._log.debug('Close client session')
         await self._session.close()
 
-    @abc.abstractmethod
+    @abstractmethod
     async def download_latest_version(self) -> None:
         pass

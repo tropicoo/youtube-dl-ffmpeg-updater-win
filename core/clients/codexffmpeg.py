@@ -1,28 +1,17 @@
-import abc
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from enum import StrEnum
 from io import BytesIO
+from typing import ClassVar, Literal
 
 from core.clients.abstract import AbstractApiClient
 from core.constants import CHUNK_SIZE
-from core.enums import CodexBuildType, CodexReleaseType
+from core.enums import (
+    CodexApiPathType,
+    CodexArchExtensionType,
+    CodexBuildType,
+    CodexReleaseType,
+)
 from core.third_party.stream_unzip import stream_unzip
-
-
-class CodexApiPath(StrEnum):
-    CHANGELOG_COUNTER = 'changelog-counter'
-
-    LATEST_GIT_VER = 'git-version'
-    LATEST_RELEASE_VER = 'release-version'
-    LATEST_TOOLS_VER = 'tools-version'
-
-    LAST_BUILD_UPDATE = 'last-build-update'
-    NEXT_BUILD_UPDATE = 'next-build-update'
-
-
-class CodexArchExtension(StrEnum):
-    ZIP = 'zip'
-    SEVEN_ZIP = '7z'
 
 
 @dataclass
@@ -32,13 +21,13 @@ class ByteResponse:
     url: str
 
 
-class AbstractCodexFFAPIClient(AbstractApiClient, abc.ABC):
-    BUILDS_URL: str
+class AbstractCodexFFAPIClient(AbstractApiClient, ABC):
+    BUILDS_URL: str | None = None
 
     async def download_latest_version(
         self,
-        release_type: CodexReleaseType = CodexReleaseType.RELEASE,
-        build_type: CodexBuildType = CodexBuildType.ESSENTIALS,
+        release_type: Literal[CodexReleaseType.RELEASE] = CodexReleaseType.RELEASE,
+        build_type: Literal[CodexBuildType.ESSENTIALS] = CodexBuildType.ESSENTIALS,
     ):
         latest_version = await self.get_latest_version()
 
@@ -65,33 +54,35 @@ class AbstractCodexFFAPIClient(AbstractApiClient, abc.ABC):
             yield filename, file_size, unzipped_chunks
 
     @staticmethod
-    @abc.abstractmethod
+    @abstractmethod
     def _make_archive_filename(
         release_type: CodexReleaseType,
         build_type: CodexBuildType,
         build_version: str,
-        extension: CodexArchExtension = CodexArchExtension.ZIP,
+        extension: Literal[CodexArchExtensionType.ZIP] = CodexArchExtensionType.ZIP,
     ) -> str:
         """Make zip archive filename to append to download url."""
 
-    @abc.abstractmethod
+    @abstractmethod
     async def _make_download_url(self, filename: str, build_version: str) -> str:
         pass
 
-    @abc.abstractmethod
+    @abstractmethod
     async def get_latest_version(self) -> str:
         pass
 
 
 class CodexFFAPIClient(AbstractCodexFFAPIClient):
-    BUILDS_URL = 'https://www.gyan.dev/ffmpeg/builds/'
-    _TYPE_MAP = {
-        CodexReleaseType.RELEASE: BUILDS_URL + CodexApiPath.LATEST_RELEASE_VER,
-        CodexReleaseType.GIT: BUILDS_URL + CodexApiPath.LATEST_GIT_VER,
+    BUILDS_URL: str = 'https://www.gyan.dev/ffmpeg/builds/'
+    _TYPE_MAP: ClassVar[dict[CodexReleaseType, str]] = {
+        CodexReleaseType.RELEASE: BUILDS_URL + CodexApiPathType.LATEST_RELEASE_VER,
+        CodexReleaseType.GIT: BUILDS_URL + CodexApiPathType.LATEST_GIT_VER,
     }
 
     async def get_changelog_counter(self) -> str:
-        return await self._get_text(self.BUILDS_URL + CodexApiPath.CHANGELOG_COUNTER)
+        return await self._get_text(
+            self.BUILDS_URL + CodexApiPathType.CHANGELOG_COUNTER
+        )
 
     async def get_latest_version(
         self, release_type: CodexReleaseType = CodexReleaseType.RELEASE
@@ -99,10 +90,14 @@ class CodexFFAPIClient(AbstractCodexFFAPIClient):
         return await self._get_text(self._TYPE_MAP[release_type])
 
     async def get_last_build_date(self) -> str:
-        return await self._get_text(self.BUILDS_URL + CodexApiPath.LAST_BUILD_UPDATE)
+        return await self._get_text(
+            self.BUILDS_URL + CodexApiPathType.LAST_BUILD_UPDATE
+        )
 
     async def get_next_build_date(self) -> str:
-        return await self._get_text(self.BUILDS_URL + CodexApiPath.NEXT_BUILD_UPDATE)
+        return await self._get_text(
+            self.BUILDS_URL + CodexApiPathType.NEXT_BUILD_UPDATE
+        )
 
     def _make_download_url(self, filename: str, build_version: str) -> str:
         return self.BUILDS_URL + filename
@@ -112,16 +107,16 @@ class CodexFFAPIClient(AbstractCodexFFAPIClient):
         release_type: CodexReleaseType,
         build_type: CodexBuildType,
         build_version: str,
-        extension: CodexArchExtension = CodexArchExtension.ZIP,
+        extension: Literal[CodexArchExtensionType.ZIP] = CodexArchExtensionType.ZIP,
     ) -> str:
         """Make zip archive filename to append to download url."""
         return f'ffmpeg-{release_type}-{build_type}.{extension}'
 
 
 class CodexFFGithubApiClient(AbstractCodexFFAPIClient):
-    HOST = 'https://github.com/GyanD/codexffmpeg'
-    BUILDS_URL = f'{HOST}/releases/download/{{tag}}/{{filename}}'
-    LATEST_TAG_URL = f'{HOST}/releases/latest'
+    HOST: str = 'https://github.com/GyanD/codexffmpeg'
+    BUILDS_URL: str = f'{HOST}/releases/download/{{tag}}/{{filename}}'
+    LATEST_TAG_URL: str = f'{HOST}/releases/latest'
 
     async def _make_download_url(self, filename: str, build_version: str) -> str:
         return self.BUILDS_URL.format(tag=build_version, filename=filename)
@@ -139,7 +134,7 @@ class CodexFFGithubApiClient(AbstractCodexFFAPIClient):
         release_type: CodexReleaseType,
         build_type: CodexBuildType,
         build_version: str,
-        extension: CodexArchExtension = CodexArchExtension.ZIP,
+        extension: Literal[CodexArchExtensionType.ZIP] = CodexArchExtensionType.ZIP,
     ) -> str:
         """Make zip archive filename to append to download url."""
         return f'ffmpeg-{build_version}-{build_type}_build.{extension}'

@@ -6,7 +6,7 @@ import os
 
 import aiofiles
 
-from core.enums import RequiredFfbinaries
+from core.enums import RequiredFfbinaryType
 from core.settings import Settings
 from core.tasks.validation import FFmpegBinValidationTask
 from core.utils import create_task
@@ -23,9 +23,9 @@ class ZipStreamExtractor:
 
     async def process_zip_stream(self, stream_generator) -> None:
         """Process stream chunks, write FFmpeg binaries on the fly and fire up validation tasks."""
-        ffbinaries = RequiredFfbinaries.choices()
+        ffbinaries = RequiredFfbinaryType.choices()
         written_files_count, ffbinaries_count = 0, len(ffbinaries)
-        async for member, file_size, unzipped_chunks in stream_generator:
+        async for member, _file_size, unzipped_chunks in stream_generator:
             member = member.decode()
             filename = os.path.basename(member)
             if filename not in ffbinaries:

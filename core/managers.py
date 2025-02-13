@@ -3,7 +3,9 @@
 import logging
 from asyncio import Task
 
-from core.enums import UpdaterComponent
+from tasks.abstract import AbstractUpdaterTask
+
+from core.enums import UpdaterComponentType
 from core.settings import Settings
 from core.tasks.codex import CodexFfmpegUpdaterTask
 from core.tasks.youtube_dl import YTDLUpdaterTask
@@ -11,10 +13,10 @@ from core.utils import create_task
 
 
 class TaskManager:
-    _TASKS = {
-        UpdaterComponent.ALL: (CodexFfmpegUpdaterTask, YTDLUpdaterTask),
-        UpdaterComponent.FFMPEG: (CodexFfmpegUpdaterTask,),
-        UpdaterComponent.YTDL: (YTDLUpdaterTask,),
+    _TASKS: dict[UpdaterComponentType, tuple[type[AbstractUpdaterTask], ...]] = {
+        UpdaterComponentType.ALL: (CodexFfmpegUpdaterTask, YTDLUpdaterTask),
+        UpdaterComponentType.FFMPEG: (CodexFfmpegUpdaterTask,),
+        UpdaterComponentType.YTDL: (YTDLUpdaterTask,),
     }
 
     def __init__(self, settings: Settings) -> None:

@@ -63,7 +63,7 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
         async def _get_num(num):
             return b''.join([chunk async for chunk in _yield_num(num)])
 
-        def _return_unused(unused):
+        def _return_unused(unused) -> None:
             nonlocal chunk
             nonlocal offset
             if len(unused) <= offset:
@@ -91,6 +91,7 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
             extra_offset += extra_data_size
             if extra_signature == desired_signature:
                 return extra_data
+        return None
 
     async def yield_file():
         (
