@@ -4,25 +4,28 @@ from pathlib import Path
 
 import typer
 
-from core.constants import DEF_EXTRACT_PATH
-from core.enums import (
+from app.banner import BANNER
+from app.constants import DEF_EXTRACT_PATH
+from app.enums import (
     CodexSourceType,
     FFSourceType,
     LogLevel,
     UpdaterComponentType,
     WinPlatformType,
 )
-from core.log import init_logging
-from core.settings import Settings
-from core.updater import Updater
+from app.log import init_logging
+from app.settings import Settings
+from app.updater import Updater
 
 
-def main(
+def main(  # noqa: PLR0913
     component: UpdaterComponentType = typer.Option(
-        UpdaterComponentType.ALL,
+        # UpdaterComponentType.ALL,
+        UpdaterComponentType.FFMPEG,
         '-c',
         '--component',
-        help=f'updater components to update, default {UpdaterComponentType.ALL}',
+        # help=f'updater components to update, default {UpdaterComponentType.ALL}',
+        help=f'updater components to update; currently, only "{UpdaterComponentType.FFMPEG}" is supported',
     ),
     destination: Path = typer.Option(
         DEF_EXTRACT_PATH,
@@ -30,7 +33,7 @@ def main(
         '--destination',
         exists=True,
         dir_okay=True,
-        help='youtube-dl directory path',
+        help='ffmpeg destination directory path',
     ),
     platform: WinPlatformType = typer.Option(
         WinPlatformType.WIN64,
@@ -38,7 +41,7 @@ def main(
         '--platform',
         help='ffmpeg binaries os platform',
     ),
-    force: bool = typer.Option(False, '-f', '--force', help='perform force update'),
+    force: bool = typer.Option(False, '-f', '--force', help='perform force update'),  # noqa: FBT003
     ffmpeg_source: FFSourceType = typer.Option(
         FFSourceType.CODEX,
         '-fsrc',
@@ -52,11 +55,11 @@ def main(
         help='codex binaries download source',
     ),
     verbose: int = typer.Option(
-        LogLevel.INFO.value,
+        LogLevel.INFO,
         '-v',
         '--verbose',
-        min=LogLevel.ERROR.value,
-        max=LogLevel.DEBUG.value,
+        min=LogLevel.ERROR,
+        max=LogLevel.DEBUG,
         help='log level 0-3',
     ),
 ) -> None:
@@ -72,6 +75,7 @@ def main(
     init_logging(log_level=settings.verbose)
 
     logger = logging.getLogger(__name__)
+    logger.info("\n%s", BANNER)
     logger.info('Starting main app')
     try:
         updater = Updater(settings=settings)

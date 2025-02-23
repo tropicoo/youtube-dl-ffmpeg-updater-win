@@ -4,8 +4,8 @@ from collections.abc import AsyncIterator
 
 from aiohttp import ClientResponseError
 
-from core.clients.abstract import AbstractApiClient
-from core.constants import CHUNK_SIZE, URL_YTDL
+from app.clients.abstract import AbstractApiClient
+from app.constants import CHUNK_SIZE, URL_YTDL
 
 
 class YTDLApiClient(AbstractApiClient):
@@ -16,4 +16,4 @@ class YTDLApiClient(AbstractApiClient):
                 async for chunk in response.content.iter_chunked(CHUNK_SIZE):
                     yield chunk
         except ClientResponseError as err:
-            self._log.error('Failed to download %s: %s', URL_YTDL, err)
+            self._log.error('Failed to download %s: "%s"', URL_YTDL, err)

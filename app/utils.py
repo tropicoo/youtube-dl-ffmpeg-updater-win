@@ -8,10 +8,10 @@ from collections.abc import Awaitable
 from typing import Any, TypeVar
 from zipfile import ZipFile
 
-from clients.codexffmpeg import ByteResponse
 from distutils.version import LooseVersion, StrictVersion
 
-from core.exceptions import CommandError
+from app.clients.codexffmpeg import ByteResponse
+from app.exceptions import CommandError
 
 
 def response_to_zip(data: ByteResponse, filename: str | None = None) -> ZipFile:
@@ -40,28 +40,40 @@ def get_largest_value(items: list, strict: bool = True) -> str:
 
 
 async def get_stdout(
-    cmd: str, log: logging.Logger | None = None, raise_on_stderr: bool = False
+    cmd: list[str] | tuple[str, ...],
+    log: logging.Logger | None = None,
+    raise_on_stderr: bool = False,
+    timeout: float = 10,
 ) -> str:
-    if not log:
-        log = logging.getLogger()
-    proc = await asyncio.create_subprocess_shell(
-        cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+    log = log or logging.getLogger(__name__)
+    proc = await asyncio.create_subprocess_exec(
+        *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
 
-    stdout, stderr = await proc.communicate()
+    try:
+        stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout)
+    except TimeoutError as err:
+        proc.kill()
+        await proc.wait()
+        log.error('Command "%s" timed out after %s seconds', cmd, timeout)  # noqa: TRY400
+        raise CommandError(f'Command timed out: {cmd}') from err
 
     log.debug('Command "%s" exited with returncode %s', cmd, proc.returncode)
-    if stderr:
-        log.warning('[stderr] %s', stderr.decode())
+
+    stdout_decoded = stdout.decode(errors='replace')
+    stderr_decoded = stderr.decode(errors='replace')
+
+    if stderr_decoded:
+        log.warning('[stderr] %s', stderr_decoded)
         if raise_on_stderr:
-            raise CommandError(stderr)
-    return stdout.decode()
+            raise CommandError(stderr_decoded)
+    return stdout_decoded
 
 
 T = TypeVar('T')
 
 
-def create_task(
+def create_task(  # noqa: PLR0913
     coroutine: Awaitable[T],
     *,
     logger: logging.Logger,

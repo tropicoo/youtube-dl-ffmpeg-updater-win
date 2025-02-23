@@ -20,9 +20,9 @@ class LogLevel(IntEnum):
 
 
 class UpdaterComponentType(BaseStrChoiceEnum):
-    ALL = 'all'
+    # ALL = 'all'
     FFMPEG = 'ffmpeg'
-    YTDL = 'ytdl'
+    # YTDL = 'ytdl'
 
 
 class WinPlatformType(BaseStrChoiceEnum):

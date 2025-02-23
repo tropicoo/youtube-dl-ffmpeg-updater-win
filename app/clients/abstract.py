@@ -2,6 +2,7 @@
 
 import logging
 from abc import ABC, abstractmethod
+from typing import Any
 
 from aiohttp import ClientSession, TCPConnector
 
@@ -9,7 +10,7 @@ from aiohttp import ClientSession, TCPConnector
 class AbstractApiClient(ABC):
     def __init__(self) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
-        self._log.debug('Initializing %s', self.__class__.__name__)
+        self._log.debug('Initializing "%s"', self.__class__.__name__)
         self._session = ClientSession(
             connector=TCPConnector(verify_ssl=False), raise_for_status=True
         )
@@ -26,5 +27,5 @@ class AbstractApiClient(ABC):
         await self._session.close()
 
     @abstractmethod
-    async def download_latest_version(self) -> None:
+    async def download_latest_version(self) -> Any:
         pass

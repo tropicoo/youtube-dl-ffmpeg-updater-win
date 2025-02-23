@@ -3,7 +3,7 @@
 from pathlib import WindowsPath
 from typing import Final
 
-from core.enums import LogLevel
+from app.enums import LogLevel
 
 LOG_FORMAT_DEBUG: Final[str] = (
     '%(asctime)s %(module)-11s %(name)-25s %(funcName)-23s %(levelname)-8s %(message)s'
@@ -22,10 +22,10 @@ DEF_EXTRACT_PATH: Final[WindowsPath] = WindowsPath(r'C:\youtube-dl')
 EXE_YTDL: Final[str] = 'youtube-dl.exe'
 URL_YTDL: Final[str] = f'https://youtube-dl.org/downloads/latest/{EXE_YTDL}'
 
-FFMPEG_NUM_REGEX: Final[str] = r'(([0-9]+\.?)+)'
+FFMPEG_NUM_REGEX: Final[str] = r'^ffmpeg\s+version\s+([\d\.]+)'
 
-CMD_YOUTUBE_DL_UPDATE: Final[str] = '{bin_path} --update'
-CMD_FFMPEG_VERSION: Final[str] = '{bin_path} -version'
+CMD_YOUTUBE_DL_UPDATE: Final[str] = '--update'
+CMD_FFMPEG_VERSION_ARG: Final[str] = '-version'
 
 CHUNK_SIZE: Final[int] = 1024 * 1024
 

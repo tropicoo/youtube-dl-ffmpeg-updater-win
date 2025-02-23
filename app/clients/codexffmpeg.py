@@ -1,17 +1,18 @@
 from abc import ABC, abstractmethod
+from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 from io import BytesIO
 from typing import ClassVar, Literal
 
-from core.clients.abstract import AbstractApiClient
-from core.constants import CHUNK_SIZE
-from core.enums import (
+from app.clients.abstract import AbstractApiClient
+from app.constants import CHUNK_SIZE
+from app.enums import (
     CodexApiPathType,
     CodexArchExtensionType,
     CodexBuildType,
     CodexReleaseType,
 )
-from core.third_party.stream_unzip import stream_unzip
+from app.third_party.stream_unzip import stream_unzip
 
 
 @dataclass
@@ -28,10 +29,11 @@ class AbstractCodexFFAPIClient(AbstractApiClient, ABC):
         self,
         release_type: Literal[CodexReleaseType.RELEASE] = CodexReleaseType.RELEASE,
         build_type: Literal[CodexBuildType.ESSENTIALS] = CodexBuildType.ESSENTIALS,
-    ):
+    ) -> AsyncGenerator[tuple[bytes, int, AsyncGenerator[bytes, None]], None]:
         latest_version = await self.get_latest_version()
+        self._log.info('Latest version: "%s"', latest_version)
 
-        async def zipped_chunks_generator():
+        async def zipped_chunks_generator() -> AsyncGenerator[bytes, None]:
             """Async zip archive chunks generator."""
             zip_filename = self._make_archive_filename(
                 release_type=release_type,
@@ -99,14 +101,14 @@ class CodexFFAPIClient(AbstractCodexFFAPIClient):
             self.BUILDS_URL + CodexApiPathType.NEXT_BUILD_UPDATE
         )
 
-    def _make_download_url(self, filename: str, build_version: str) -> str:
+    def _make_download_url(self, filename: str, build_version: str) -> str:  # noqa: ARG002
         return self.BUILDS_URL + filename
 
     @staticmethod
     def _make_archive_filename(
         release_type: CodexReleaseType,
         build_type: CodexBuildType,
-        build_version: str,
+        build_version: str,  # noqa: ARG004
         extension: Literal[CodexArchExtensionType.ZIP] = CodexArchExtensionType.ZIP,
     ) -> str:
         """Make zip archive filename to append to download url."""
@@ -131,7 +133,7 @@ class CodexFFGithubApiClient(AbstractCodexFFAPIClient):
 
     @staticmethod
     def _make_archive_filename(
-        release_type: CodexReleaseType,
+        release_type: CodexReleaseType,  # noqa: ARG004
         build_type: CodexBuildType,
         build_version: str,
         extension: Literal[CodexArchExtensionType.ZIP] = CodexArchExtensionType.ZIP,

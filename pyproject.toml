@@ -21,6 +21,7 @@ line-length = 88
 indent-width = 4
 target-version = "py312"
 required-version = ">=0.9"
+extend-exclude = ["app/third_party/*"]
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"
@@ -31,26 +32,32 @@ ignore = [
     "ANN002",
     "ANN003",
     "ANN401",
+    "ASYNC109",
     "ASYNC110",
+    "B008",
+    "BLE001",
     "COM812",
     "D100",
+    "D101",
+    "D102",
     "D103",
+    "D104",
+    "D105",
     "D107",
+    "D203",
+    "D213",
     "E501",
     "EM101",
     "EM102",
+    "FAST002",
     "FBT001",
     "FBT002",
+    "FIX002",
     "INP001",
     "ISC001",
     "PERF401",
-    "PLR0913",
-    "PTH103",
-    "PTH110",
-    "PTH112",
-    "PTH123",
-    "RUF012",
-    "S110",
+    "TD002",
+    "TD003",
     "TRY003",
 ]
 
