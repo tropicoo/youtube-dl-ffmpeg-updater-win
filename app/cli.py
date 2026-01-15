@@ -24,7 +24,7 @@ def main(  # noqa: PLR0913
         UpdaterComponentType.FFMPEG,
         '-c',
         '--component',
-        # help=f'updater components to update, default {UpdaterComponentType.ALL}',
+        # help=f'updater components to update, default {UpdaterComponentType.ALL}', # noqa: ERA001
         help=f'updater components to update; currently, only "{UpdaterComponentType.FFMPEG}" is supported',
     ),
     destination: Path = typer.Option(
@@ -75,7 +75,7 @@ def main(  # noqa: PLR0913
     init_logging(log_level=settings.verbose)
 
     logger = logging.getLogger(__name__)
-    logger.info("\n%s", BANNER)
+    logger.info('\n%s', BANNER)
     logger.info('Starting main app')
     try:
         updater = Updater(settings=settings)

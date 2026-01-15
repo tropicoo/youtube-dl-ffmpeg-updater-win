@@ -8,7 +8,7 @@ from collections.abc import Awaitable
 from typing import Any, TypeVar
 from zipfile import ZipFile
 
-from distutils.version import LooseVersion, StrictVersion
+from packaging.version import Version
 
 from app.clients.codexffmpeg import ByteResponse
 from app.exceptions import CommandError
@@ -34,9 +34,13 @@ def get_filename_from_url(url: str) -> str:
     return url.rsplit('/', 1)[-1]
 
 
-def get_largest_value(items: list, strict: bool = True) -> str:
-    conv_cls = StrictVersion if strict else LooseVersion
-    return str(max([conv_cls(x) for x in items]))
+def get_largest_value(items: list[str]) -> str:
+    """Return the string representation of the highest version.
+
+    Assumes items are PEP 440 compatible version strings.
+    Raises InvalidVersion if any value cannot be parsed.
+    """
+    return str(max(map(Version, items)))
 
 
 async def get_stdout(
@@ -73,7 +77,7 @@ async def get_stdout(
 T = TypeVar('T')
 
 
-def create_task(  # noqa: PLR0913
+def create_task[T](  # noqa: PLR0913
     coroutine: Awaitable[T],
     *,
     logger: logging.Logger,

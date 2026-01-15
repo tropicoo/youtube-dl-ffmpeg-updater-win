@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import os
 import re
 from abc import ABC, abstractmethod
 
@@ -73,7 +72,7 @@ class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, ABC):
 
     def _all_ffbinaries_exist(self) -> bool:
         """Check whether all FFmpeg binaries exist on disk."""
-        files = os.listdir(self._settings.destination)
+        files = self._settings.destination.iterdir()
         return len(set(files) & RequiredFfbinaryType.choices()) == len(
             RequiredFfbinaryType
         )

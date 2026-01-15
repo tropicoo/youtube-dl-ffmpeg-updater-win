@@ -1,13 +1,12 @@
 """Constants Module."""
 
 from enum import IntEnum, StrEnum
-from typing import cast
 
 
 class BaseStrChoiceEnum(StrEnum):
     @classmethod
     def choices(cls) -> frozenset[str]:
-        return frozenset(cast(str, member.value) for member in cls)
+        return frozenset(member.value for member in cls)
 
 
 class LogLevel(IntEnum):
@@ -20,9 +19,9 @@ class LogLevel(IntEnum):
 
 
 class UpdaterComponentType(BaseStrChoiceEnum):
-    # ALL = 'all'
+    # ALL = 'all' # noqa: ERA001
     FFMPEG = 'ffmpeg'
-    # YTDL = 'ytdl'
+    # YTDL = 'ytdl' # noqa: ERA001
 
 
 class WinPlatformType(BaseStrChoiceEnum):

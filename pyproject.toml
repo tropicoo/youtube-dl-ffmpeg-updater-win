@@ -7,13 +7,16 @@ requires-python = ">=3.12"
 dependencies = [
     "aiofiles>=24.1.0",
     "aiohttp>=3.11.11",
+    "packaging>=25.0",
     "setuptools>=75.8.0",
     "typer>=0.15.1",
 ]
 
 [dependency-groups]
-lint = [
-    "ruff>=0.9.3",
+dev = [
+    "pylint>=4.0.4",
+    "ruff>=0.14.13",
+    "ty>=0.0.12",
 ]
 
 [tool.ruff]

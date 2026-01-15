@@ -5,7 +5,7 @@ Codex FFmpeg builds (https://www.gyan.dev/ffmpeg/builds) with their latest versi
 
 ## Version
 
-Current: 0.4.3
+Current: 0.4.4
 
 ## Requirements
 

@@ -58,7 +58,7 @@ class YTDLSubprocessUpdater(AbstractYTDLUpdater):
         """Update youtube-dl by subprocess call."""
         bin_path = self._settings.destination / EXE_YTDL
         cmd = CMD_YOUTUBE_DL_UPDATE.format(bin_path=bin_path)
-        stdout = await get_stdout(cmd, self._log, raise_on_stderr=True)
+        stdout = await get_stdout((cmd,), self._log, raise_on_stderr=True)
         self._log.info('Command stdout "%s"', stdout.strip())
 
 
