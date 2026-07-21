@@ -18,7 +18,7 @@ from app.log import init_logging
 from app.settings import Settings
 
 
-def main(  # noqa: PLR0913
+def run_cli(  # noqa: PLR0913
     component: UpdaterComponentType = typer.Option(
         # UpdaterComponentType.ALL,
         UpdaterComponentType.FFMPEG,

@@ -1,6 +1,11 @@
 import typer
 
-from app.cli import main
+from app.cli.main import run_cli
+
+
+def main() -> None:
+    typer.run(run_cli)
+
 
 if __name__ == '__main__':
-    typer.run(main)
+    main()

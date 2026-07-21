@@ -1,6 +1,6 @@
 [project]
 name = "ffmpeg-updater-win"
-version = "0.4.5"
+version = "0.4.6"
 description = "youtube-dl and ffmpeg binaries updater for Windows OS"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -27,7 +27,7 @@ line-length = 88
 indent-width = 4
 target-version = "py312"
 required-version = ">=0.9"
-extend-exclude = ["app/third_party/*"]
+extend-exclude = ["**/third_party/*"]
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"

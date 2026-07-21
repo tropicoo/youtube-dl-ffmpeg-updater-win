@@ -95,11 +95,11 @@ async def stream_unzip(zipfile_chunks, chunk_size=65536):
 
     async def yield_file():
         (
-            version,
+            _version,
             flags,
             compression,
-            mod_time,
-            mod_date,
+            _mod_time,
+            _mod_date,
             crc_32_expected,
             compressed_size,
             uncompressed_size,
