@@ -6,6 +6,7 @@ import typer
 
 from app.banner import BANNER
 from app.constants import DEF_EXTRACT_PATH
+from app.core.updater import Updater
 from app.enums import (
     CodexSourceType,
     FFSourceType,
@@ -15,7 +16,6 @@ from app.enums import (
 )
 from app.log import init_logging
 from app.settings import Settings
-from app.updater import Updater
 
 
 def main(  # noqa: PLR0913
@@ -78,8 +78,6 @@ def main(  # noqa: PLR0913
     logger.info('\n%s', BANNER)
     logger.info('Starting main app')
     try:
-        updater = Updater(settings=settings)
-        # Not using "asyncio.run(main())" due to bug https://github.com/aio-libs/aiohttp/issues/4324
-        asyncio.get_event_loop().run_until_complete(updater.run())
+        asyncio.run(Updater(settings=settings).run())
     finally:
         logger.info('Exiting main app')

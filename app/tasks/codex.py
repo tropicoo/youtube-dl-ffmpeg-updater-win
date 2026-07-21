@@ -1,7 +1,7 @@
 from typing import Literal
 
+from app.core.zip_extractor import ZipStreamExtractor
 from app.enums import FFSourceType, WinPlatformType
-from app.extractor import ZipStreamExtractor
 from app.tasks.abstract import AbstractFFmpegUpdaterTask
 
 

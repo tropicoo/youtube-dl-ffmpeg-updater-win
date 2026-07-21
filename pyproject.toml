@@ -1,6 +1,6 @@
 [project]
 name = "ffmpeg-updater-win"
-version = "0.4.2"
+version = "0.4.5"
 description = "youtube-dl and ffmpeg binaries updater for Windows OS"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -14,7 +14,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "bandit>=1.9.4",
     "pylint>=4.0.4",
+    "pyrefly>=1.1.1",
+    "pytest>=9.1.1",
     "ruff>=0.14.13",
     "ty>=0.0.12",
 ]
