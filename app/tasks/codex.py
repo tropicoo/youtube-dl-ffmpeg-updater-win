@@ -1,12 +1,12 @@
-from typing import Literal
+from typing import ClassVar, Literal
 
 from app.core.zip_extractor import ZipStreamExtractor
 from app.enums import FFSourceType, WinPlatformType
-from app.tasks.abstract import AbstractFFmpegUpdaterTask
+from app.tasks.abstract import BaseFFmpegUpdaterTask
 
 
-class CodexFfmpegUpdaterTask(AbstractFFmpegUpdaterTask):
-    TYPE: Literal[FFSourceType.CODEX] = FFSourceType.CODEX
+class CodexFfmpegUpdaterTask(BaseFFmpegUpdaterTask):
+    TYPE: ClassVar[Literal[FFSourceType.CODEX]] = FFSourceType.CODEX
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

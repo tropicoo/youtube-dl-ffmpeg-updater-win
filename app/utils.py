@@ -5,12 +5,12 @@ import functools
 import logging
 import re
 from collections.abc import Awaitable
-from typing import Any, TypeVar
+from typing import Any
 from zipfile import ZipFile
 
 from packaging.version import Version
 
-from app.clients.codexffmpeg import ByteResponse
+from app.clients.codex_ffmpeg.models import ByteResponse
 from app.exceptions import CommandError
 
 
@@ -74,9 +74,6 @@ async def get_stdout(
     return stdout_decoded
 
 
-T = TypeVar('T')
-
-
 def create_task[T](  # noqa: PLR0913
     coroutine: Awaitable[T],
     *,
@@ -84,7 +81,7 @@ def create_task[T](  # noqa: PLR0913
     task_name: str | None = None,
     exception_message: str = 'Task raised an exception',
     exception_message_args: tuple[Any, ...] = (),
-    loop: asyncio.AbstractEventLoop | None = None,
+    loop: asyncio.BaseEventLoop | None = None,
 ) -> asyncio.Task[T]:
     if loop is None:
         loop = asyncio.get_running_loop()

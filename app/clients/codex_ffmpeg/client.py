@@ -1,13 +1,11 @@
 from abc import ABC, abstractmethod
 from collections.abc import AsyncGenerator
-from dataclasses import dataclass
-from io import BytesIO
 from typing import ClassVar, Literal
 
-from app.clients.abstract import AbstractApiClient
+from app.clients.abstract import BaseApiClient
 from app.constants import CHUNK_SIZE
 from app.enums import (
-    CodexApiPathType,
+    CodexAPIPathType,
     CodexArchExtensionType,
     CodexBuildType,
     CodexReleaseType,
@@ -15,15 +13,8 @@ from app.enums import (
 from app.third_party.stream_unzip import stream_unzip
 
 
-@dataclass
-class ByteResponse:
-    bytes_data: BytesIO
-    headers: dict
-    url: str
-
-
-class AbstractCodexFFAPIClient(AbstractApiClient, ABC):
-    BUILDS_URL: str | None = None
+class BaseCodexFFAPIClient(BaseApiClient, ABC):
+    BUILDS_URL: ClassVar[str | None] = None
 
     async def download_latest_version(
         self,
@@ -74,16 +65,16 @@ class AbstractCodexFFAPIClient(AbstractApiClient, ABC):
         pass
 
 
-class CodexFFAPIClient(AbstractCodexFFAPIClient):
-    BUILDS_URL: str = 'https://www.gyan.dev/ffmpeg/builds/'
+class CodexFFAPIClient(BaseCodexFFAPIClient):
+    BUILDS_URL: ClassVar[str] = 'https://www.gyan.dev/ffmpeg/builds/'
     _TYPE_MAP: ClassVar[dict[CodexReleaseType, str]] = {
-        CodexReleaseType.RELEASE: BUILDS_URL + CodexApiPathType.LATEST_RELEASE_VER,
-        CodexReleaseType.GIT: BUILDS_URL + CodexApiPathType.LATEST_GIT_VER,
+        CodexReleaseType.RELEASE: BUILDS_URL + CodexAPIPathType.LATEST_RELEASE_VER,
+        CodexReleaseType.GIT: BUILDS_URL + CodexAPIPathType.LATEST_GIT_VER,
     }
 
     async def get_changelog_counter(self) -> str:
         return await self._get_text(
-            self.BUILDS_URL + CodexApiPathType.CHANGELOG_COUNTER
+            self.BUILDS_URL + CodexAPIPathType.CHANGELOG_COUNTER
         )
 
     async def get_latest_version(
@@ -93,12 +84,12 @@ class CodexFFAPIClient(AbstractCodexFFAPIClient):
 
     async def get_last_build_date(self) -> str:
         return await self._get_text(
-            self.BUILDS_URL + CodexApiPathType.LAST_BUILD_UPDATE
+            self.BUILDS_URL + CodexAPIPathType.LAST_BUILD_UPDATE
         )
 
     async def get_next_build_date(self) -> str:
         return await self._get_text(
-            self.BUILDS_URL + CodexApiPathType.NEXT_BUILD_UPDATE
+            self.BUILDS_URL + CodexAPIPathType.NEXT_BUILD_UPDATE
         )
 
     def _make_download_url(self, filename: str, build_version: str) -> str:  # noqa: ARG002
@@ -115,10 +106,10 @@ class CodexFFAPIClient(AbstractCodexFFAPIClient):
         return f'ffmpeg-{release_type}-{build_type}.{extension}'
 
 
-class CodexFFGithubApiClient(AbstractCodexFFAPIClient):
-    HOST: str = 'https://github.com/GyanD/codexffmpeg'
-    BUILDS_URL: str = f'{HOST}/releases/download/{{tag}}/{{filename}}'
-    LATEST_TAG_URL: str = f'{HOST}/releases/latest'
+class CodexFFGithubApiClient(BaseCodexFFAPIClient):
+    HOST: ClassVar[str] = 'https://github.com/GyanD/codexffmpeg'
+    BUILDS_URL: ClassVar[str] = f'{HOST}/releases/download/{{tag}}/{{filename}}'
+    LATEST_TAG_URL: ClassVar[str] = f'{HOST}/releases/latest'
 
     async def _make_download_url(self, filename: str, build_version: str) -> str:
         return self.BUILDS_URL.format(tag=build_version, filename=filename)

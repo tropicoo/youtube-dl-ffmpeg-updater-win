@@ -18,7 +18,7 @@ from app.log import init_logging
 from app.settings import Settings
 
 
-def run_cli(  # noqa: PLR0913
+def run_cli(  # noqa: PLR0913, PLR0917
     component: UpdaterComponentType = typer.Option(
         # UpdaterComponentType.ALL,
         UpdaterComponentType.FFMPEG,
@@ -54,13 +54,8 @@ def run_cli(  # noqa: PLR0913
         '--codex--source',
         help='codex binaries download source',
     ),
-    verbose: int = typer.Option(
-        LogLevel.INFO,
-        '-v',
-        '--verbose',
-        min=LogLevel.ERROR,
-        max=LogLevel.DEBUG,
-        help='log level 0-3',
+    verbose: LogLevel = typer.Option(
+        LogLevel.INFO, '-v', '--verbose', help='log level 0-3'
     ),
 ) -> None:
     settings = Settings(

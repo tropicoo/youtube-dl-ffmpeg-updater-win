@@ -1,5 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
+from typing import ClassVar
 
 import aiofiles
 
@@ -7,12 +8,12 @@ from app.clients.ytdl import YTDLApiClient
 from app.constants import CMD_FFMPEG_VERSION_ARG, CMD_YOUTUBE_DL_UPDATE, EXE_YTDL
 from app.exceptions import CommandError
 from app.settings import Settings
-from app.tasks.abstract import AbstractUpdaterTask
+from app.tasks.abstract import BaseUpdaterTask
 from app.utils import get_stdout
 
 
-class AbstractYTDLUpdater(ABC):
-    NAME: str | None = None
+class BaseYTDLUpdater(ABC):
+    NAME: ClassVar[str | None] = None
 
     def __init__(self, settings: Settings) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
@@ -35,8 +36,8 @@ class AbstractYTDLUpdater(ABC):
         pass
 
 
-class YTDLWebUpdater(AbstractYTDLUpdater):
-    NAME: str = 'youtube-dl web updater'
+class YTDLWebUpdater(BaseYTDLUpdater):
+    NAME: ClassVar[str] = 'youtube-dl web updater'
 
     def __init__(self, settings: Settings, api_client: YTDLApiClient) -> None:
         super().__init__(settings=settings)
@@ -51,8 +52,8 @@ class YTDLWebUpdater(AbstractYTDLUpdater):
         await self._print_version()
 
 
-class YTDLSubprocessUpdater(AbstractYTDLUpdater):
-    NAME: str = 'youtube-dl subprocess updater'
+class YTDLSubprocessUpdater(BaseYTDLUpdater):
+    NAME: ClassVar[str] = 'youtube-dl subprocess updater'
 
     async def _update(self) -> None:
         """Update youtube-dl by subprocess call."""
@@ -62,9 +63,7 @@ class YTDLSubprocessUpdater(AbstractYTDLUpdater):
         self._log.info('Command stdout "%s"', stdout.strip())
 
 
-class YTDLUpdaterTask(AbstractUpdaterTask):
-    _api_client: YTDLApiClient
-
+class YTDLUpdaterTask(BaseUpdaterTask[YTDLApiClient]):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._web_updater = YTDLWebUpdater(self._settings, self._api_client)

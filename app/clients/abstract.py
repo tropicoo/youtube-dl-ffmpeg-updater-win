@@ -7,7 +7,7 @@ from typing import Any
 from aiohttp import ClientSession, TCPConnector
 
 
-class AbstractApiClient(ABC):
+class BaseApiClient(ABC):
     def __init__(self) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing "%s"', self.__class__.__name__)

@@ -2,17 +2,18 @@ import asyncio
 import logging
 import re
 from abc import ABC, abstractmethod
+from typing import ClassVar
 
-from app.clients.abstract import AbstractApiClient
-from app.clients.codexffmpeg import AbstractCodexFFAPIClient
+from app.clients.abstract import BaseApiClient
+from app.clients.codex_ffmpeg.client import BaseCodexFFAPIClient
 from app.constants import CMD_FFMPEG_VERSION_ARG, FFMPEG_NUM_REGEX
 from app.enums import FFSourceType, RequiredFfbinaryType
 from app.settings import Settings
 from app.utils import get_stdout
 
 
-class AbstractUpdaterTask(ABC):
-    def __init__(self, api_client: AbstractApiClient, settings: Settings) -> None:
+class BaseUpdaterTask[T: BaseApiClient](ABC):
+    def __init__(self, api_client: T, settings: Settings) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug('Initializing "%s"', self.__class__.__name__)
         self._api_client = api_client
@@ -32,9 +33,8 @@ class AbstractUpdaterTask(ABC):
         pass
 
 
-class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, ABC):
-    TYPE: FFSourceType | None = None
-    _api_client: AbstractCodexFFAPIClient
+class BaseFFmpegUpdaterTask(BaseUpdaterTask[BaseCodexFFAPIClient], ABC):
+    TYPE: ClassVar[FFSourceType | None] = None
 
     @abstractmethod
     async def _perform_update(self) -> None:
@@ -46,7 +46,10 @@ class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, ABC):
         if await self._needs_update():
             await self._perform_update()
         else:
-            self._log.info('FFmpeg binaries are up-to-date, nothing to update')
+            self._log.info(
+                'FFmpeg binaries are up-to-date in "%s", nothing to update',
+                self._settings.destination,
+            )
 
     async def _needs_update(self) -> bool:
         """Check if ffbinaries need to be updated."""
@@ -72,7 +75,7 @@ class AbstractFFmpegUpdaterTask(AbstractUpdaterTask, ABC):
 
     def _all_ffbinaries_exist(self) -> bool:
         """Check whether all FFmpeg binaries exist on disk."""
-        files = self._settings.destination.iterdir()
+        files = {path.name for path in self._settings.destination.iterdir()}
         return len(set(files) & RequiredFfbinaryType.choices()) == len(
             RequiredFfbinaryType
         )

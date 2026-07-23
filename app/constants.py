@@ -1,4 +1,4 @@
-"""Constants Module."""
+"""Constants module."""
 
 from pathlib import WindowsPath
 from typing import Final
@@ -6,7 +6,7 @@ from typing import Final
 from app.enums import LogLevel
 
 LOG_FORMAT_DEBUG: Final[str] = (
-    '%(asctime)s %(module)-11s %(name)-25s %(funcName)-23s %(levelname)-8s %(message)s'
+    '%(asctime)s %(module)-15s %(name)-25s %(funcName)-24s %(levelname)-8s %(message)s'
 )
 LOG_FORMAT_INFO: Final[str] = '%(name)-25s %(levelname)-8s %(message)s'
 

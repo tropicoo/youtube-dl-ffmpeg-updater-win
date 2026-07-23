@@ -1,4 +1,4 @@
-"""Constants Module."""
+"""Enums module."""
 
 from enum import IntEnum, StrEnum
 
@@ -58,7 +58,7 @@ class CodexSourceType(BaseStrChoiceEnum):
     CODEX = 'codex'
 
 
-class CodexApiPathType(BaseStrChoiceEnum):
+class CodexAPIPathType(BaseStrChoiceEnum):
     CHANGELOG_COUNTER = 'changelog-counter'
 
     LATEST_GIT_VER = 'git-version'

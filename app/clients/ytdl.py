@@ -4,11 +4,11 @@ from collections.abc import AsyncIterator
 
 from aiohttp import ClientResponseError
 
-from app.clients.abstract import AbstractApiClient
+from app.clients.abstract import BaseApiClient
 from app.constants import CHUNK_SIZE, URL_YTDL
 
 
-class YTDLApiClient(AbstractApiClient):
+class YTDLApiClient(BaseApiClient):
     async def download_latest_version(self) -> AsyncIterator[bytes]:
         """Download the latest version of youtube-dl executable."""
         try:

@@ -1,6 +1,6 @@
 [project]
 name = "ffmpeg-updater-win"
-version = "0.4.6"
+version = "0.4.7"
 description = "youtube-dl and ffmpeg binaries updater for Windows OS"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -8,6 +8,8 @@ dependencies = [
     "aiofiles>=24.1.0",
     "aiohttp>=3.11.11",
     "packaging>=25.0",
+    "pydantic>=2.13.4",
+    "rich>=15.0.0",
     "setuptools>=75.8.0",
     "typer>=0.15.1",
 ]
@@ -43,6 +45,7 @@ ignore = [
     "B008",
     "BLE001",
     "COM812",
+    "CPY001",
     "D100",
     "D101",
     "D102",
@@ -72,3 +75,9 @@ indent-style = "space"
 quote-style = "single"
 line-ending = "lf"
 docstring-code-format = true
+
+[tool.pyrefly]
+project-includes = [
+    "**/*.py*",
+    "**/*.ipynb",
+]

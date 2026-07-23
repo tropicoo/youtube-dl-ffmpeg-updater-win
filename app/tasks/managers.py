@@ -4,19 +4,17 @@ import logging
 from asyncio import Task
 from typing import ClassVar
 
-from app.clients.abstract import AbstractApiClient
+from app.clients.abstract import BaseApiClient
 from app.enums import UpdaterComponentType
 from app.mappings import get_api_cls
 from app.settings import Settings
-from app.tasks.abstract import AbstractUpdaterTask
+from app.tasks.abstract import BaseUpdaterTask
 from app.tasks.codex import CodexFfmpegUpdaterTask
 from app.utils import create_task
 
 
 class TaskManager:
-    TASKS: ClassVar[
-        dict[UpdaterComponentType, tuple[type[AbstractUpdaterTask], ...]]
-    ] = {
+    TASKS: ClassVar[dict[UpdaterComponentType, tuple[type[BaseUpdaterTask], ...]]] = {
         # UpdaterComponentType.ALL: (CodexFfmpegUpdaterTask, YTDLUpdaterTask),
         UpdaterComponentType.FFMPEG: (CodexFfmpegUpdaterTask,),
         # UpdaterComponentType.YTDL: (YTDLUpdaterTask,),
@@ -44,7 +42,5 @@ class TaskManager:
             )
         return tasks
 
-    def _create_api_client(
-        self, task_cls: type[AbstractUpdaterTask]
-    ) -> AbstractApiClient:
+    def _create_api_client(self, task_cls: type[BaseUpdaterTask]) -> BaseApiClient:
         return get_api_cls(settings=self._settings, updater_task_cls=task_cls)()

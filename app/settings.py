@@ -1,5 +1,6 @@
-from dataclasses import dataclass
 from pathlib import Path
+
+from pydantic import BaseModel, ConfigDict
 
 from app.enums import (
     CodexSourceType,
@@ -10,8 +11,11 @@ from app.enums import (
 )
 
 
-@dataclass
-class Settings:
+class Settings(BaseModel):
+    model_config = ConfigDict(
+        strict=True, frozen=True, extra='forbid', arbitrary_types_allowed=True
+    )
+
     component: UpdaterComponentType
     destination: Path
     platform: WinPlatformType
