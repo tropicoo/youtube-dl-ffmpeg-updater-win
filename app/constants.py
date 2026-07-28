@@ -1,9 +1,11 @@
 """Constants module."""
 
-from pathlib import WindowsPath
+from pathlib import Path
 from typing import Final
 
 from app.enums import LogLevel
+
+WINDOWS_PLATFORM: Final[str] = 'Windows'
 
 LOG_FORMAT_DEBUG: Final[str] = (
     '%(asctime)s %(module)-15s %(name)-25s %(funcName)-24s %(levelname)-8s %(message)s'
@@ -17,7 +19,7 @@ LOG_MAP: Final[dict[LogLevel, str]] = {
     LogLevel.DEBUG: LOG_FORMAT_DEBUG,
 }
 
-DEF_EXTRACT_PATH: Final[WindowsPath] = WindowsPath(r'C:\youtube-dl')
+DEF_EXTRACT_PATH: Final[Path] = Path(r'C:\youtube-dl')
 
 EXE_YTDL: Final[str] = 'youtube-dl.exe'
 URL_YTDL: Final[str] = f'https://youtube-dl.org/downloads/latest/{EXE_YTDL}'

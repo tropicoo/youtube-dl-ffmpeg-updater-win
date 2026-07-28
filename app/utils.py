@@ -9,6 +9,7 @@ from typing import Any
 from zipfile import ZipFile
 
 from packaging.version import Version
+from rich import print as rich_print
 
 from app.clients.codex_ffmpeg.models import ByteResponse
 from app.exceptions import CommandError
@@ -110,3 +111,7 @@ def _handle_task_result(
         pass
     except Exception:
         logger.exception(exception_message, *exception_message_args)
+
+
+def print_bold_red(text: str) -> None:
+    rich_print(f'[red]{text}[/red]')

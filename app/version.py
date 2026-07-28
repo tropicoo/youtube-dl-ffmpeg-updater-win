@@ -1,1 +1,3 @@
-__version__ = '0.4.7'
+from typing import Final
+
+__version__: Final[str] = '0.4.8'

@@ -13,7 +13,11 @@ from app.enums import (
 
 class Settings(BaseModel):
     model_config = ConfigDict(
-        strict=True, frozen=True, extra='forbid', arbitrary_types_allowed=True
+        strict=True,
+        frozen=True,
+        extra='forbid',
+        arbitrary_types_allowed=True,
+        str_strip_whitespace=True,
     )
 
     component: UpdaterComponentType

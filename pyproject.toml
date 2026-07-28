@@ -10,13 +10,13 @@ dependencies = [
     "packaging>=25.0",
     "pydantic>=2.13.4",
     "rich>=15.0.0",
-    "setuptools>=75.8.0",
     "typer>=0.15.1",
 ]
 
 [dependency-groups]
 dev = [
     "bandit>=1.9.4",
+    "hypothesis>=6.163.0",
     "pylint>=4.0.4",
     "pyrefly>=1.1.1",
     "pytest>=9.1.1",

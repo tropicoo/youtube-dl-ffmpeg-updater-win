@@ -5,6 +5,7 @@ from pathlib import Path
 import typer
 
 from app.banner import BANNER
+from app.cli.platform_validator import abort_on_non_windows
 from app.constants import DEF_EXTRACT_PATH
 from app.core.updater import Updater
 from app.enums import (
@@ -58,6 +59,7 @@ def run_cli(  # noqa: PLR0913, PLR0917
         LogLevel.INFO, '-v', '--verbose', help='log level 0-3'
     ),
 ) -> None:
+    abort_on_non_windows()
     settings = Settings(
         component=component,
         destination=destination,
