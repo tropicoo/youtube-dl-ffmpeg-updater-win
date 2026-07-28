@@ -3,8 +3,9 @@
 from pathlib import Path
 from typing import Final
 
-from app.enums import LogLevel
+from app.enums import LogLevelType
 
+APP_NAME: Final[str] = 'ffmpeg-updater-win'
 WINDOWS_PLATFORM: Final[str] = 'Windows'
 
 LOG_FORMAT_DEBUG: Final[str] = (
@@ -12,11 +13,11 @@ LOG_FORMAT_DEBUG: Final[str] = (
 )
 LOG_FORMAT_INFO: Final[str] = '%(name)-25s %(levelname)-8s %(message)s'
 
-LOG_MAP: Final[dict[LogLevel, str]] = {
-    LogLevel.ERROR: LOG_FORMAT_INFO,
-    LogLevel.WARNING: LOG_FORMAT_INFO,
-    LogLevel.INFO: LOG_FORMAT_INFO,
-    LogLevel.DEBUG: LOG_FORMAT_DEBUG,
+LOG_MAP: Final[dict[LogLevelType, str]] = {
+    LogLevelType.ERROR: LOG_FORMAT_INFO,
+    LogLevelType.WARNING: LOG_FORMAT_INFO,
+    LogLevelType.INFO: LOG_FORMAT_INFO,
+    LogLevelType.DEBUG: LOG_FORMAT_DEBUG,
 }
 
 DEF_EXTRACT_PATH: Final[Path] = Path(r'C:\youtube-dl')
@@ -30,6 +31,3 @@ CMD_YOUTUBE_DL_UPDATE: Final[str] = '--update'
 CMD_FFMPEG_VERSION_ARG: Final[str] = '-version'
 
 CHUNK_SIZE: Final[int] = 1024 * 1024
-
-EXIT_OK: Final[int] = 0
-EXIT_ERROR: Final[int] = 1

@@ -9,13 +9,18 @@ class BaseStrChoiceEnum(StrEnum):
         return frozenset(member.value for member in cls)
 
 
-class LogLevel(IntEnum):
+class LogLevelType(IntEnum):
     """Log Level Name to Verbosity level."""
 
     ERROR = 0
     WARNING = 1
     INFO = 2
     DEBUG = 3
+
+
+class ExitCodeType(IntEnum):
+    EXIT_OK = 0
+    EXIT_ERROR = 1
 
 
 class UpdaterComponentType(BaseStrChoiceEnum):

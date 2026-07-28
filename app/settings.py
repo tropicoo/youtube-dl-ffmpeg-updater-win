@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict
 from app.enums import (
     CodexSourceType,
     FFSourceType,
-    LogLevel,
+    LogLevelType,
     UpdaterComponentType,
     WinPlatformType,
 )
@@ -26,4 +26,4 @@ class Settings(BaseModel):
     force: bool
     ffmpeg_source: FFSourceType
     codex_source: CodexSourceType
-    verbose: LogLevel
+    verbose: LogLevelType

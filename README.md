@@ -5,7 +5,7 @@ Codex FFmpeg builds (https://www.gyan.dev/ffmpeg/builds) with their latest versi
 
 ## Version
 
-Current: 0.4.8
+Current: 0.4.9
 
 ## Requirements
 
@@ -69,21 +69,22 @@ pip3 install -r requirements.txt
 
 ## Help
 
-```
+```terminaloutput
 > python main.py --help
-
- Usage: main.py [OPTIONS]
-
-╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ --component      -c         <ffmpeg>            updater components to update; currently, only "ffmpeg" is supported [default: ffmpeg] │
-│ --destination    -d         <path>              ffmpeg destination directory path [default: C:\youtube-dl]                            │
-│ --platform       -p         <win32|win64>       ffmpeg binaries os platform [default: win64]                                          │
-│ --force          -f                             perform force update                                                                  │
-│ --ffmpeg-source  -fsrc      <codex|ffbinaries>  ffmpeg binaries source; currently, only "codex" is supported [default: codex]         │
-│ --codex--source  -csrc      <github|codex>      codex binaries download source [default: github]                                      │
-│ --verbose        -v         <0|1|2|3>           log level 0-3 [default: 2]                                                            │
-│ --help                                          Show this message and exit.                                                           │
-╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                                                            
+ Usage: main.py [OPTIONS]                                                                                                                    
+                                                                                                                                             
+╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --component      -c         <ffmpeg>            Updater components to update; currently, only "ffmpeg" is supported [default: ffmpeg]     │
+│ --destination    -d         <directory>         Ffmpeg destination directory path [default: C:\youtube-dl]                                │
+│ --platform       -p         <win32|win64>       Ffmpeg binaries os platform [default: win64]                                              │
+│ --force          -f                             Perform force update                                                                      │
+│ --ffmpeg-source  -fsrc      <codex|ffbinaries>  Ffmpeg binaries source; currently, only "codex" is supported [default: codex]             │
+│ --codex--source  -csrc      <github|codex>      Codex binaries download source [default: github]                                          │
+│ --verbose        -v         <0|1|2|3>           Log level 0-3 [default: 2]                                                                │
+│ --version        -V                             Show app version                                                                          │
+│ --help                                          Show this message and exit.                                                               │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 ## Misc
