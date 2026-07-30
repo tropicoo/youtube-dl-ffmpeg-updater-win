@@ -113,5 +113,9 @@ def _handle_task_result(
         logger.exception(exception_message, *exception_message_args)
 
 
-def print_bold_red(text: str) -> None:
+def print_red(text: str) -> None:
     rich_print(f'[red]{text}[/red]')
+
+
+def print_bold_green(text: str) -> None:
+    rich_print(f'[bold green]{text}[/bold green]')
