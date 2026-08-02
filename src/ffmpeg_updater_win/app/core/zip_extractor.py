@@ -1,14 +1,14 @@
 """Zip Extractor module."""
 
 import asyncio
-import logging
 from collections.abc import AsyncGenerator
 from pathlib import Path
 
 import aiofiles
+from loguru import logger
 
 from ffmpeg_updater_win.app.enums import RequiredFfbinaryType
-from ffmpeg_updater_win.app.settings import Settings
+from ffmpeg_updater_win.app.models.config import UpdaterConfig
 from ffmpeg_updater_win.app.tasks.validation import FFmpegBinValidationTask
 from ffmpeg_updater_win.app.utils import create_task
 
@@ -16,9 +16,9 @@ from ffmpeg_updater_win.app.utils import create_task
 class ZipStreamExtractor:
     """Stream FFmpeg binaries chunk extractor."""
 
-    def __init__(self, settings: Settings) -> None:
-        self._log = logging.getLogger(self.__class__.__name__)
-        self._log.debug('Initializing "%s"', self.__class__.__name__)
+    def __init__(self, settings: UpdaterConfig) -> None:
+        self._log = logger
+        self._log.debug('Initializing "{}"', self.__class__.__name__)
         self._settings = settings
         self._validation_tasks = []
 
@@ -35,7 +35,7 @@ class ZipStreamExtractor:
             member = member_.decode()
             filename = Path(member).name
             if filename not in ffbinaries:
-                self._log.debug('Skip %s', member)
+                self._log.debug('Skip {}', member)
                 async for _ in unzipped_chunks:
                     # Go through chunks for unneeded files and throw them out.
                     pass
@@ -52,7 +52,7 @@ class ZipStreamExtractor:
     async def _write_file(self, filename: str, unzipped_chunks) -> None:  # noqa: ANN001
         """Write unzipped chunks into file."""
         file_path = self._settings.destination / filename
-        self._log.debug('Write file %s', file_path)
+        self._log.debug('Write file {}', file_path)
         async with aiofiles.open(file_path, 'wb') as fd_out:
             async for chunk in unzipped_chunks:
                 await fd_out.write(chunk)
@@ -64,8 +64,8 @@ class ZipStreamExtractor:
             create_task(
                 FFmpegBinValidationTask().validate(file_path),
                 task_name=f'Validation<{file_path}>',
-                logger=self._log,
-                exception_message='Task %s raised an exception',
+                log=self._log,
+                exception_message='Task {} raised an exception',
                 exception_message_args=(FFmpegBinValidationTask.__name__,),
             )
         )

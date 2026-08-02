@@ -1,8 +1,8 @@
-import logging
 from abc import ABC, abstractmethod
 from typing import ClassVar
 
 import aiofiles
+from loguru import logger
 
 from ffmpeg_updater_win.app.clients.ytdl import YTDLApiClient
 from ffmpeg_updater_win.app.constants import (
@@ -11,7 +11,7 @@ from ffmpeg_updater_win.app.constants import (
     EXE_YTDL,
 )
 from ffmpeg_updater_win.app.exceptions import CommandError
-from ffmpeg_updater_win.app.settings import Settings
+from ffmpeg_updater_win.app.models.config import UpdaterConfig
 from ffmpeg_updater_win.app.tasks.abstract import BaseUpdaterTask
 from ffmpeg_updater_win.app.utils import get_stdout
 
@@ -19,9 +19,9 @@ from ffmpeg_updater_win.app.utils import get_stdout
 class BaseYTDLUpdater(ABC):
     NAME: ClassVar[str | None] = None
 
-    def __init__(self, settings: Settings) -> None:
-        self._log = logging.getLogger(self.__class__.__name__)
-        self._log.debug('Initializing "%s"', self.__class__.__name__)
+    def __init__(self, settings: UpdaterConfig) -> None:
+        self._log = logger
+        self._log.debug('Initializing "{}"', self.__class__.__name__)
         self._settings = settings
 
     async def _print_version(self) -> None:
@@ -29,10 +29,10 @@ class BaseYTDLUpdater(ABC):
         version = await get_stdout(
             cmd=(bin_path, CMD_FFMPEG_VERSION_ARG), log=self._log
         )
-        self._log.info('youtube-dl updated to version %s', version.strip())
+        self._log.info('youtube-dl updated to version {}', version.strip())
 
     async def update(self) -> None:
-        self._log.info('Updating by %s', self.NAME)
+        self._log.info('Updating by {}', self.NAME)
         await self._update()
 
     @abstractmethod
@@ -43,7 +43,7 @@ class BaseYTDLUpdater(ABC):
 class YTDLWebUpdater(BaseYTDLUpdater):
     NAME: ClassVar[str] = 'youtube-dl web updater'
 
-    def __init__(self, settings: Settings, api_client: YTDLApiClient) -> None:
+    def __init__(self, settings: UpdaterConfig, api_client: YTDLApiClient) -> None:
         super().__init__(settings=settings)
         self._api_client = api_client
 
@@ -64,7 +64,7 @@ class YTDLSubprocessUpdater(BaseYTDLUpdater):
         bin_path = self._settings.destination / EXE_YTDL
         cmd = CMD_YOUTUBE_DL_UPDATE.format(bin_path=bin_path)
         stdout = await get_stdout((cmd,), self._log, raise_on_stderr=True)
-        self._log.info('Command stdout "%s"', stdout.strip())
+        self._log.info('Command stdout "{}"', stdout.strip())
 
 
 class YTDLUpdaterTask(BaseUpdaterTask[YTDLApiClient]):
@@ -75,7 +75,7 @@ class YTDLUpdaterTask(BaseUpdaterTask[YTDLApiClient]):
 
     async def _update(self) -> None:
         """Update youtube-dl from web or by subprocess."""
-        self._log.info('Updating %s', EXE_YTDL)
+        self._log.info('Updating {}', EXE_YTDL)
         if self._settings.force:
             await self._web_updater.update()
             return
@@ -84,6 +84,6 @@ class YTDLUpdaterTask(BaseUpdaterTask[YTDLApiClient]):
             await self._subprocess_updater.update()
         except CommandError:
             self._log.warning(
-                'Local %s build not found, downloading from web', EXE_YTDL
+                'Local {} build not found, downloading from web', EXE_YTDL
             )
             await self._web_updater.update()

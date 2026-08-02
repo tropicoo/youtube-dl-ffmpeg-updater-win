@@ -2,17 +2,19 @@
 
 import asyncio
 import functools
-import logging
 import re
 from collections.abc import Awaitable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from zipfile import ZipFile
 
+from loguru import logger
 from packaging.version import Version
-from rich import print as rich_print
 
 from ffmpeg_updater_win.app.clients.codex_ffmpeg.models import ByteResponse
 from ffmpeg_updater_win.app.exceptions import CommandError
+
+if TYPE_CHECKING:
+    from loguru import Logger  # noqa: TC004
 
 
 def response_to_zip(data: ByteResponse, filename: str | None = None) -> ZipFile:
@@ -46,11 +48,11 @@ def get_largest_value(items: list[str]) -> str:
 
 async def get_stdout(
     cmd: list[str] | tuple[str, ...],
-    log: logging.Logger | None = None,
+    log: Logger | None = None,
     raise_on_stderr: bool = False,
     timeout: float = 10,
 ) -> str:
-    log = log or logging.getLogger(__name__)
+    log = log or logger
     proc = await asyncio.create_subprocess_exec(
         *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
@@ -60,16 +62,16 @@ async def get_stdout(
     except TimeoutError as err:
         proc.kill()
         await proc.wait()
-        log.error('Command "%s" timed out after %s seconds', cmd, timeout)  # noqa: TRY400
+        log.error('Command "{}" timed out after {} seconds', cmd, timeout)  # noqa: TRY400
         raise CommandError(f'Command timed out: {cmd}') from err
 
-    log.debug('Command "%s" exited with returncode %s', cmd, proc.returncode)
+    log.debug('Command "{}" exited with returncode {}', cmd, proc.returncode)
 
     stdout_decoded = stdout.decode(errors='replace')
     stderr_decoded = stderr.decode(errors='replace')
 
     if stderr_decoded:
-        log.warning('[stderr] %s', stderr_decoded)
+        log.warning('[stderr] {}', stderr_decoded)
         if raise_on_stderr:
             raise CommandError(stderr_decoded)
     return stdout_decoded
@@ -78,7 +80,7 @@ async def get_stdout(
 def create_task[T](  # noqa: PLR0913
     coroutine: Awaitable[T],
     *,
-    logger: logging.Logger,
+    log: Logger,
     task_name: str | None = None,
     exception_message: str = 'Task raised an exception',
     exception_message_args: tuple[Any, ...] = (),
@@ -90,7 +92,7 @@ def create_task[T](  # noqa: PLR0913
     task.add_done_callback(
         functools.partial(
             _handle_task_result,
-            logger=logger,
+            log=log,
             exception_message=exception_message,
             exception_message_args=exception_message_args,
         )
@@ -101,7 +103,7 @@ def create_task[T](  # noqa: PLR0913
 def _handle_task_result(
     task: asyncio.Task,
     *,
-    logger: logging.Logger,
+    log: Logger,
     exception_message: str,
     exception_message_args: tuple[Any, ...] = (),
 ) -> None:
@@ -110,12 +112,4 @@ def _handle_task_result(
     except asyncio.CancelledError:
         pass
     except Exception:
-        logger.exception(exception_message, *exception_message_args)
-
-
-def print_red(text: str) -> None:
-    rich_print(f'[red]{text}[/red]')
-
-
-def print_bold_green(text: str) -> None:
-    rich_print(f'[bold green]{text}[/bold green]')
+        log.exception(exception_message, *exception_message_args)

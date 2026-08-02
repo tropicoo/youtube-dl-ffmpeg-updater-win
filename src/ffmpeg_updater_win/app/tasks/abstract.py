@@ -1,21 +1,22 @@
 import asyncio
-import logging
 import re
 from abc import ABC, abstractmethod
 from typing import ClassVar
+
+from loguru import logger
 
 from ffmpeg_updater_win.app.clients.abstract import BaseApiClient
 from ffmpeg_updater_win.app.clients.codex_ffmpeg.client import BaseCodexFFAPIClient
 from ffmpeg_updater_win.app.constants import CMD_FFMPEG_VERSION_ARG, FFMPEG_NUM_REGEX
 from ffmpeg_updater_win.app.enums import FFSourceType, RequiredFfbinaryType
-from ffmpeg_updater_win.app.settings import Settings
+from ffmpeg_updater_win.app.models.config import UpdaterConfig
 from ffmpeg_updater_win.app.utils import get_stdout
 
 
 class BaseUpdaterTask[T: BaseApiClient](ABC):
-    def __init__(self, api_client: T, settings: Settings) -> None:
-        self._log = logging.getLogger(self.__class__.__name__)
-        self._log.debug('Initializing "%s"', self.__class__.__name__)
+    def __init__(self, api_client: T, settings: UpdaterConfig) -> None:
+        self._log = logger
+        self._log.debug('Initializing "{}"', self.__class__.__name__)
         self._api_client = api_client
         self._settings = settings
 
@@ -42,12 +43,12 @@ class BaseFFmpegUpdaterTask(BaseUpdaterTask[BaseCodexFFAPIClient], ABC):
 
     async def _update(self) -> None:
         """Update FFmpeg build."""
-        self._log.info('Updating FFmpeg binaries from %s', self.TYPE)
+        self._log.info('Updating FFmpeg binaries from "{}"', self.TYPE)
         if await self._needs_update():
             await self._perform_update()
         else:
             self._log.info(
-                'FFmpeg binaries are up-to-date in "%s", nothing to update',
+                'FFmpeg binaries are up-to-date in "{}", nothing to update',
                 self._settings.destination,
             )
 
@@ -60,13 +61,13 @@ class BaseFFmpegUpdaterTask(BaseUpdaterTask[BaseCodexFFAPIClient], ABC):
             self._api_client.get_latest_version(), self._get_local_version()
         )
         self._log.info(
-            'Local FFmpeg version "%s", latest version "%s"',
+            'Local FFmpeg version "{}", latest version "{}"',
             local_version,
             latest_version,
         )
         if latest_version != local_version:
             self._log.info(
-                'Local FFmpeg build version %s needs update to %s',
+                'Local FFmpeg build version {} needs update to {}',
                 local_version,
                 latest_version,
             )
@@ -87,20 +88,20 @@ class BaseFFmpegUpdaterTask(BaseUpdaterTask[BaseCodexFFAPIClient], ABC):
             stdout = await get_stdout(
                 cmd=(bin_path.as_posix(), CMD_FFMPEG_VERSION_ARG), log=self._log
             )
-            self._log.debug('Local FFmpeg build version:\n\n%s', stdout)
+            self._log.debug('Local FFmpeg build version:\n\n{}', stdout)
         except FileNotFoundError:
             self._log.warning(
                 'Local FFmpeg build not found, will proceed with download'
             )
             return None
         except OSError as err:
-            self._log.warning('Error getting local FFmpeg build version: "%s"', err)
+            self._log.warning('Error getting local FFmpeg build version: "{}"', err)
             return None
 
         match = re.match(FFMPEG_NUM_REGEX, stdout)
         if not match:
             self._log.warning(
-                'Error getting local FFmpeg build version using regex "%s"',
+                'Error getting local FFmpeg build version using regex "{}"',
                 FFMPEG_NUM_REGEX,
             )
             return None

@@ -1,9 +1,9 @@
 import asyncio
-import logging
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Final
 
 import typer
+from loguru import logger
 
 from ffmpeg_updater_win.app.banner import BANNER
 from ffmpeg_updater_win.app.cli.callbacks import version_callback
@@ -18,10 +18,18 @@ from ffmpeg_updater_win.app.enums import (
     WinPlatformType,
 )
 from ffmpeg_updater_win.app.log import init_logging
-from ffmpeg_updater_win.app.settings import Settings
+from ffmpeg_updater_win.app.models.config import UpdaterConfig
+
+typer_app: Final[typer.Typer] = typer.Typer(no_args_is_help=True)
 
 
-def run_cli(  # noqa: PLR0913, PLR0917
+@typer_app.callback()
+def main() -> None:
+    """FFmpeg updater CLI."""
+
+
+@typer_app.command()
+def run(  # noqa: PLR0913, PLR0917
     component: UpdaterComponentType = typer.Option(
         # UpdaterComponentType.ALL,
         UpdaterComponentType.FFMPEG,
@@ -68,7 +76,7 @@ def run_cli(  # noqa: PLR0913, PLR0917
     ] = None,
 ) -> None:
     abort_on_non_windows()
-    settings = Settings(
+    updater_config = UpdaterConfig(
         component=component,
         destination=destination,
         platform=platform,
@@ -77,12 +85,11 @@ def run_cli(  # noqa: PLR0913, PLR0917
         codex_source=codex_source,
         verbose=LogLevelType(verbose),
     )
-    init_logging(log_level=settings.verbose)
+    init_logging(log_level=updater_config.verbose)
 
-    logger = logging.getLogger(__name__)
-    logger.info('\n%s', BANNER)
+    logger.info('\n{}', BANNER)
     logger.info('Starting main app')
     try:
-        asyncio.run(Updater(settings=settings).run())
+        asyncio.run(Updater(config=updater_config).run())
     finally:
         logger.info('Exiting main app')

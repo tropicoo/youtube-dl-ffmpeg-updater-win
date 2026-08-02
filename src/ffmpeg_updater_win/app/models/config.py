@@ -11,7 +11,7 @@ from ffmpeg_updater_win.app.enums import (
 )
 
 
-class Settings(BaseModel):
+class UpdaterConfig(BaseModel):
     model_config = ConfigDict(
         strict=True,
         frozen=True,

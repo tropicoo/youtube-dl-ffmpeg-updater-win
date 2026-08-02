@@ -1,10 +1,11 @@
 """Updater module."""
 
 import asyncio
-import logging
+
+from loguru import logger
 
 from ffmpeg_updater_win.app.exceptions import UpdaterError
-from ffmpeg_updater_win.app.settings import Settings
+from ffmpeg_updater_win.app.models.config import UpdaterConfig
 from ffmpeg_updater_win.app.tasks.managers import TaskManager
 from ffmpeg_updater_win.app.version import __version__
 
@@ -12,26 +13,26 @@ from ffmpeg_updater_win.app.version import __version__
 class Updater:
     """Main updater class."""
 
-    def __init__(self, settings: Settings) -> None:
-        self._log = logging.getLogger(self.__class__.__name__)
+    def __init__(self, config: UpdaterConfig) -> None:
+        self._log = logger
         self._log.info(
-            'Initializing "%s" version %s', self.__class__.__name__, __version__
+            'Initializing "{}" version {}', self.__class__.__name__, __version__
         )
-        self._settings = settings
-        self._task_manager = TaskManager(settings=self._settings)
+        self._conf = config
+        self._task_manager = TaskManager(settings=self._conf)
 
     async def run(self) -> None:
         """Start update tasks."""
-        self._log.info('Starting%s update', ' force' if self._settings.force else '')
+        self._log.info('Starting{} update', ' force' if self._conf.force else '')
         self._check_destination_path_existence()
         await asyncio.gather(*self._task_manager.create_tasks(), return_exceptions=True)
-        self._log.info('%spdate finished', 'Force u' if self._settings.force else 'U')
+        self._log.info('{}pdate finished', 'Force u' if self._conf.force else 'U')
 
     def _check_destination_path_existence(self) -> None:
         """Check if destination path exists and is a directory."""
-        path = self._settings.destination
+        path = self._conf.destination
         if not path.exists():
-            self._log.info('Creating destination directory "%s"', path)
+            self._log.info('Creating destination directory "{}"', path)
             path.mkdir(parents=True)
             return
 

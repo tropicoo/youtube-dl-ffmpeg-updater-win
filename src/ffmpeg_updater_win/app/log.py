@@ -1,24 +1,23 @@
 """Logging Module."""
 
-import logging
+import sys
 
-from ffmpeg_updater_win.app.constants import LOG_MAP
+from loguru import logger
+
 from ffmpeg_updater_win.app.enums import LogLevelType
 
 
-def init_logging(
-    log_level: LogLevelType,
-    suppress_asyncio: bool = True,
-    suppress_urllib3: bool = True,
-) -> None:
+def init_logging(log_level: LogLevelType) -> None:
     """Init logging function. Used for new processes that don't have configured `root` logger."""
-    logging.basicConfig(
-        format=LOG_MAP[log_level],
+    logger.remove()
+    logger.add(
+        sys.stderr,
+        colorize=True,
         level=log_level.name,
-        datefmt='%Y-%m-%d %H:%M:%S',
-        force=True,
+        format=(
+            '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
+            '<level>{level:<8}</level> | '
+            '<cyan>{module:<15}</cyan><cyan>{function:<24}</cyan>:<magenta>{line:>4}</magenta> | '
+            '<level>{message}</level>'
+        ),
     )
-    if suppress_asyncio:
-        logging.getLogger('asyncio').setLevel(logging.WARNING)
-    if suppress_urllib3:
-        logging.getLogger('urllib3').setLevel(logging.WARNING)

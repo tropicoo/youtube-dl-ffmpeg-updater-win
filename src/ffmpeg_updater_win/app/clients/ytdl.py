@@ -16,4 +16,4 @@ class YTDLApiClient(BaseApiClient):
                 async for chunk in response.content.iter_chunked(CHUNK_SIZE):
                     yield chunk
         except ClientResponseError as err:
-            self._log.error('Failed to download %s: "%s"', URL_YTDL, err)
+            self._log.error('Failed to download {}: "{}"', URL_YTDL, err)

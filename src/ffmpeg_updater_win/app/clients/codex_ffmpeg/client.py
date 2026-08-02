@@ -22,7 +22,7 @@ class BaseCodexFFAPIClient(BaseApiClient, ABC):
         build_type: Literal[CodexBuildType.ESSENTIALS] = CodexBuildType.ESSENTIALS,
     ) -> AsyncGenerator[tuple[bytes, int, AsyncGenerator[bytes, None]], None]:
         latest_version = await self.get_latest_version()
-        self._log.info('Latest version: "%s"', latest_version)
+        self._log.info('Latest version: "{}"', latest_version)
 
         async def zipped_chunks_generator() -> AsyncGenerator[bytes, None]:
             """Async zip archive chunks generator."""
@@ -34,12 +34,12 @@ class BaseCodexFFAPIClient(BaseApiClient, ABC):
             url = await self._make_download_url(
                 filename=zip_filename, build_version=latest_version
             )
-            self._log.debug('GET %s', url)
-            self._log.debug('Start download %s', zip_filename)
+            self._log.debug('GET {}', url)
+            self._log.debug('Start download {}', zip_filename)
             async with self._session.get(url) as response:
                 async for chunk in response.content.iter_chunked(CHUNK_SIZE):
                     yield chunk
-                self._log.debug('End download %s', zip_filename)
+                self._log.debug('End download {}', zip_filename)
 
         async for filename, file_size, unzipped_chunks in stream_unzip(
             zipped_chunks_generator()
@@ -118,7 +118,7 @@ class CodexFFGithubApiClient(BaseCodexFFAPIClient):
         return await self._get_latest_tag()
 
     async def _get_latest_tag(self) -> str:
-        self._log.debug('GET %s', self.LATEST_TAG_URL)
+        self._log.debug('GET {}', self.LATEST_TAG_URL)
         async with self._session.get(self.LATEST_TAG_URL) as response:
             return response.url.name
 
