@@ -2,10 +2,10 @@ import platform
 
 import typer
 
-from app.constants import APP_NAME, WINDOWS_PLATFORM
-from app.enums import ExitCodeType
-from app.utils import print_bold_green, print_red
-from app.version import __version__
+from ffmpeg_updater_win.app.constants import APP_NAME, WINDOWS_PLATFORM
+from ffmpeg_updater_win.app.enums import ExitCodeType
+from ffmpeg_updater_win.app.utils import print_bold_green, print_red
+from ffmpeg_updater_win.app.version import __version__
 
 
 def abort_on_non_windows() -> None:

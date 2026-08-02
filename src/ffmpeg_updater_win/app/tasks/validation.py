@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from app.utils import get_stdout
+from ffmpeg_updater_win.app.utils import get_stdout
 
 
 class FFmpegBinValidationTask:

@@ -1,6 +1,6 @@
 [project]
 name = "ffmpeg-updater-win"
-version = "0.4.9"
+version = "0.4.10"
 description = "youtube-dl and ffmpeg binaries updater for Windows OS"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -21,8 +21,16 @@ dev = [
     "pyrefly>=1.1.1",
     "pytest>=9.1.1",
     "ruff>=0.14.13",
+    "semgrep>=1.172.0",
     "ty>=0.0.12",
 ]
+
+[project.scripts]
+ffmpeg-updater-win = "ffmpeg_updater_win:main"
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"
 
 [tool.ruff]
 line-length = 88

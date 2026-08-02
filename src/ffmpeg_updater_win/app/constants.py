@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Final
 
-from app.enums import LogLevelType
+from ffmpeg_updater_win.app.enums import LogLevelType
 
 APP_NAME: Final[str] = 'ffmpeg-updater-win'
 WINDOWS_PLATFORM: Final[str] = 'Windows'

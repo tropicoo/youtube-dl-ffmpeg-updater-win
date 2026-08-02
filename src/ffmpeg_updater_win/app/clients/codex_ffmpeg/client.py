@@ -2,15 +2,15 @@ from abc import ABC, abstractmethod
 from collections.abc import AsyncGenerator
 from typing import ClassVar, Literal
 
-from app.clients.abstract import BaseApiClient
-from app.constants import CHUNK_SIZE
-from app.enums import (
+from ffmpeg_updater_win.app.clients.abstract import BaseApiClient
+from ffmpeg_updater_win.app.constants import CHUNK_SIZE
+from ffmpeg_updater_win.app.enums import (
     CodexAPIPathType,
     CodexArchExtensionType,
     CodexBuildType,
     CodexReleaseType,
 )
-from app.third_party.stream_unzip import stream_unzip
+from ffmpeg_updater_win.app.third_party.stream_unzip import stream_unzip
 
 
 class BaseCodexFFAPIClient(BaseApiClient, ABC):

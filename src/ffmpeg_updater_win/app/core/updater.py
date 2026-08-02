@@ -3,10 +3,10 @@
 import asyncio
 import logging
 
-from app.exceptions import UpdaterError
-from app.settings import Settings
-from app.tasks.managers import TaskManager
-from app.version import __version__
+from ffmpeg_updater_win.app.exceptions import UpdaterError
+from ffmpeg_updater_win.app.settings import Settings
+from ffmpeg_updater_win.app.tasks.managers import TaskManager
+from ffmpeg_updater_win.app.version import __version__
 
 
 class Updater:

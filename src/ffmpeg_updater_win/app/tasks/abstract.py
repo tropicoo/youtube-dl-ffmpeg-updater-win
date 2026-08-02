@@ -4,12 +4,12 @@ import re
 from abc import ABC, abstractmethod
 from typing import ClassVar
 
-from app.clients.abstract import BaseApiClient
-from app.clients.codex_ffmpeg.client import BaseCodexFFAPIClient
-from app.constants import CMD_FFMPEG_VERSION_ARG, FFMPEG_NUM_REGEX
-from app.enums import FFSourceType, RequiredFfbinaryType
-from app.settings import Settings
-from app.utils import get_stdout
+from ffmpeg_updater_win.app.clients.abstract import BaseApiClient
+from ffmpeg_updater_win.app.clients.codex_ffmpeg.client import BaseCodexFFAPIClient
+from ffmpeg_updater_win.app.constants import CMD_FFMPEG_VERSION_ARG, FFMPEG_NUM_REGEX
+from ffmpeg_updater_win.app.enums import FFSourceType, RequiredFfbinaryType
+from ffmpeg_updater_win.app.settings import Settings
+from ffmpeg_updater_win.app.utils import get_stdout
 
 
 class BaseUpdaterTask[T: BaseApiClient](ABC):

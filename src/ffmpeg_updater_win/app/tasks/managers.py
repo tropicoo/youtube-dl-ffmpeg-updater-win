@@ -4,13 +4,13 @@ import logging
 from asyncio import Task
 from typing import ClassVar
 
-from app.clients.abstract import BaseApiClient
-from app.enums import UpdaterComponentType
-from app.mappings import get_api_cls
-from app.settings import Settings
-from app.tasks.abstract import BaseUpdaterTask
-from app.tasks.codex import CodexFfmpegUpdaterTask
-from app.utils import create_task
+from ffmpeg_updater_win.app.clients.abstract import BaseApiClient
+from ffmpeg_updater_win.app.enums import UpdaterComponentType
+from ffmpeg_updater_win.app.mappings import get_api_cls
+from ffmpeg_updater_win.app.settings import Settings
+from ffmpeg_updater_win.app.tasks.abstract import BaseUpdaterTask
+from ffmpeg_updater_win.app.tasks.codex import CodexFfmpegUpdaterTask
+from ffmpeg_updater_win.app.utils import create_task
 
 
 class TaskManager:

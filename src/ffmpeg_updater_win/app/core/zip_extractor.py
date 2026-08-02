@@ -7,10 +7,10 @@ from pathlib import Path
 
 import aiofiles
 
-from app.enums import RequiredFfbinaryType
-from app.settings import Settings
-from app.tasks.validation import FFmpegBinValidationTask
-from app.utils import create_task
+from ffmpeg_updater_win.app.enums import RequiredFfbinaryType
+from ffmpeg_updater_win.app.settings import Settings
+from ffmpeg_updater_win.app.tasks.validation import FFmpegBinValidationTask
+from ffmpeg_updater_win.app.utils import create_task
 
 
 class ZipStreamExtractor:

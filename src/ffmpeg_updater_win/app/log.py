@@ -2,8 +2,8 @@
 
 import logging
 
-from app.constants import LOG_MAP
-from app.enums import LogLevelType
+from ffmpeg_updater_win.app.constants import LOG_MAP
+from ffmpeg_updater_win.app.enums import LogLevelType
 
 
 def init_logging(

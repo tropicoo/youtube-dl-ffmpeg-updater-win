@@ -5,7 +5,7 @@ Codex FFmpeg builds (https://www.gyan.dev/ffmpeg/builds) with their latest versi
 
 ## Version
 
-Current: 0.4.9
+Current: 0.4.10
 
 ## Requirements
 
@@ -17,14 +17,13 @@ Python 3.12+
 ## Installation
 
 ```
-git clone https://github.com/tropicoo/youtube-dl-ffmpeg-updater-win.git
-pip3 install -r requirements.txt
+uv tool install git+https://github.com/tropicoo/youtube-dl-ffmpeg-updater-win
 ```
 
 ## Usage
 
 ```
-> python main.py --force --platform win64 --verbose 3
+> ffmpeg-updater-win --force --platform win64 --verbose 3
 
 2026-07-23 23:37:57 main            app.cli.main              run_cli                  INFO     
 
@@ -70,9 +69,9 @@ pip3 install -r requirements.txt
 ## Help
 
 ```terminaloutput
-> python main.py --help
+> uv run ffmpeg-updater-win --help
                                                                                                                                             
- Usage: main.py [OPTIONS]                                                                                                                    
+ Usage: ffmpeg-updater-win [OPTIONS]                                                                                                                    
                                                                                                                                              
 ╭─ Options ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ --component      -c         <ffmpeg>            Updater components to update; currently, only "ffmpeg" is supported [default: ffmpeg]     │
@@ -89,14 +88,13 @@ pip3 install -r requirements.txt
 
 ## Misc
 
-Easily run as batch file `ffmpeg-updater.bat` on Windows.
+Easily run as batch file `ffmpeg-updater-win.bat` on Windows.
 
 ```
-:: Content of the file "`ffmpeg-updater.bat"
+:: Content of the file "ffmpeg-updater-win.bat"
 
 @echo off
-
-python3 <absolute_path_to_main.py> --platform win64 --verbose 3
+ffmpeg-updater-win --platform win64 --verbose 3
 
 pause
 ```

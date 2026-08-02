@@ -11,8 +11,8 @@ from zipfile import ZipFile
 from packaging.version import Version
 from rich import print as rich_print
 
-from app.clients.codex_ffmpeg.models import ByteResponse
-from app.exceptions import CommandError
+from ffmpeg_updater_win.app.clients.codex_ffmpeg.models import ByteResponse
+from ffmpeg_updater_win.app.exceptions import CommandError
 
 
 def response_to_zip(data: ByteResponse, filename: str | None = None) -> ZipFile:

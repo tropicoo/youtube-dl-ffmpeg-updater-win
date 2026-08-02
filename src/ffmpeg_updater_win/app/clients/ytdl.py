@@ -4,8 +4,8 @@ from collections.abc import AsyncIterator
 
 from aiohttp import ClientResponseError
 
-from app.clients.abstract import BaseApiClient
-from app.constants import CHUNK_SIZE, URL_YTDL
+from ffmpeg_updater_win.app.clients.abstract import BaseApiClient
+from ffmpeg_updater_win.app.constants import CHUNK_SIZE, URL_YTDL
 
 
 class YTDLApiClient(BaseApiClient):

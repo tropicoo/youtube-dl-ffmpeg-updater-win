@@ -1,8 +1,8 @@
 import typer
 from rich import print as rich_print
 
-from app.constants import APP_NAME
-from app.version import __version__
+from ffmpeg_updater_win.app.constants import APP_NAME
+from ffmpeg_updater_win.app.version import __version__
 
 
 def version_callback(value: bool) -> None:

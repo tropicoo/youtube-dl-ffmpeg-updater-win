@@ -1,8 +1,8 @@
 from typing import ClassVar, Literal
 
-from app.core.zip_extractor import ZipStreamExtractor
-from app.enums import FFSourceType, WinPlatformType
-from app.tasks.abstract import BaseFFmpegUpdaterTask
+from ffmpeg_updater_win.app.core.zip_extractor import ZipStreamExtractor
+from ffmpeg_updater_win.app.enums import FFSourceType, WinPlatformType
+from ffmpeg_updater_win.app.tasks.abstract import BaseFFmpegUpdaterTask
 
 
 class CodexFfmpegUpdaterTask(BaseFFmpegUpdaterTask):

@@ -5,20 +5,20 @@ from typing import Annotated
 
 import typer
 
-from app.banner import BANNER
-from app.cli.callbacks import version_callback
-from app.cli.platform_validator import abort_on_non_windows
-from app.constants import DEF_EXTRACT_PATH
-from app.core.updater import Updater
-from app.enums import (
+from ffmpeg_updater_win.app.banner import BANNER
+from ffmpeg_updater_win.app.cli.callbacks import version_callback
+from ffmpeg_updater_win.app.cli.platform_validator import abort_on_non_windows
+from ffmpeg_updater_win.app.constants import DEF_EXTRACT_PATH
+from ffmpeg_updater_win.app.core.updater import Updater
+from ffmpeg_updater_win.app.enums import (
     CodexSourceType,
     FFSourceType,
     LogLevelType,
     UpdaterComponentType,
     WinPlatformType,
 )
-from app.log import init_logging
-from app.settings import Settings
+from ffmpeg_updater_win.app.log import init_logging
+from ffmpeg_updater_win.app.settings import Settings
 
 
 def run_cli(  # noqa: PLR0913, PLR0917

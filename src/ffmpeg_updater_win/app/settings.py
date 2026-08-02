@@ -2,7 +2,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict
 
-from app.enums import (
+from ffmpeg_updater_win.app.enums import (
     CodexSourceType,
     FFSourceType,
     LogLevelType,

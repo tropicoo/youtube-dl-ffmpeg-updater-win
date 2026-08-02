@@ -4,12 +4,16 @@ from typing import ClassVar
 
 import aiofiles
 
-from app.clients.ytdl import YTDLApiClient
-from app.constants import CMD_FFMPEG_VERSION_ARG, CMD_YOUTUBE_DL_UPDATE, EXE_YTDL
-from app.exceptions import CommandError
-from app.settings import Settings
-from app.tasks.abstract import BaseUpdaterTask
-from app.utils import get_stdout
+from ffmpeg_updater_win.app.clients.ytdl import YTDLApiClient
+from ffmpeg_updater_win.app.constants import (
+    CMD_FFMPEG_VERSION_ARG,
+    CMD_YOUTUBE_DL_UPDATE,
+    EXE_YTDL,
+)
+from ffmpeg_updater_win.app.exceptions import CommandError
+from ffmpeg_updater_win.app.settings import Settings
+from ffmpeg_updater_win.app.tasks.abstract import BaseUpdaterTask
+from ffmpeg_updater_win.app.utils import get_stdout
 
 
 class BaseYTDLUpdater(ABC):
