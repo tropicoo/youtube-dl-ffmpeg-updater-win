@@ -4,11 +4,13 @@ import asyncio
 import functools
 import re
 from collections.abc import Awaitable
+from io import StringIO
 from typing import TYPE_CHECKING, Any
 from zipfile import ZipFile
 
 from loguru import logger
 from packaging.version import Version
+from rich.console import Console
 
 from ffmpeg_updater_win.app.clients.codex_ffmpeg.models import ByteResponse
 from ffmpeg_updater_win.app.exceptions import CommandError
@@ -113,3 +115,10 @@ def _handle_task_result(
         pass
     except Exception:
         log.exception(exception_message, *exception_message_args)
+
+
+def render_to_ansi(renderable: Any, *, width: int | None = None) -> str:
+    buf = StringIO()
+    console = Console(file=buf, width=width)
+    console.print(renderable)
+    return buf.getvalue()

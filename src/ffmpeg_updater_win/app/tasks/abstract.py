@@ -4,13 +4,14 @@ from abc import ABC, abstractmethod
 from typing import ClassVar
 
 from loguru import logger
+from rich.panel import Panel
 
 from ffmpeg_updater_win.app.clients.abstract import BaseApiClient
 from ffmpeg_updater_win.app.clients.codex_ffmpeg.client import BaseCodexFFAPIClient
 from ffmpeg_updater_win.app.constants import CMD_FFMPEG_VERSION_ARG, FFMPEG_NUM_REGEX
 from ffmpeg_updater_win.app.enums import FFSourceType, RequiredFfbinaryType
 from ffmpeg_updater_win.app.models.config import UpdaterConfig
-from ffmpeg_updater_win.app.utils import get_stdout
+from ffmpeg_updater_win.app.utils import get_stdout, render_to_ansi
 
 
 class BaseUpdaterTask[T: BaseApiClient](ABC):
@@ -88,7 +89,10 @@ class BaseFFmpegUpdaterTask(BaseUpdaterTask[BaseCodexFFAPIClient], ABC):
             stdout = await get_stdout(
                 cmd=(bin_path.as_posix(), CMD_FFMPEG_VERSION_ARG), log=self._log
             )
-            self._log.debug('Local FFmpeg build version:\n\n{}', stdout)
+            panel = Panel(f'[blue]{stdout}', title='Version')
+            self._log.debug(
+                'Local FFmpeg build version:\n\n{}', render_to_ansi(renderable=panel)
+            )
         except FileNotFoundError:
             self._log.warning(
                 'Local FFmpeg build not found, will proceed with download'
