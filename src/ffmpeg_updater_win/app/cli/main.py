@@ -20,12 +20,16 @@ from ffmpeg_updater_win.app.enums import (
 from ffmpeg_updater_win.app.log import init_logging
 from ffmpeg_updater_win.app.models.config import UpdaterConfig
 
-typer_app: Final[typer.Typer] = typer.Typer(no_args_is_help=True)
+typer_app: Final[typer.Typer] = typer.Typer(invoke_without_command=True)
 
 
 @typer_app.callback()
-def main() -> None:
+def main(ctx: typer.Context) -> None:
     """FFmpeg updater CLI."""
+    if ctx.invoked_subcommand is None:
+        typer.echo(BANNER)
+        typer.echo(ctx.get_help())
+        raise typer.Exit
 
 
 @typer_app.command()
