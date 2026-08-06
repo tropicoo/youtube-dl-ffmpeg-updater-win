@@ -24,9 +24,7 @@ class ExitCodeType(IntEnum):
 
 
 class UpdaterComponentType(BaseStrChoiceEnum):
-    # ALL = 'all' # noqa: ERA001
     FFMPEG = 'ffmpeg'
-    # YTDL = 'ytdl' # noqa: ERA001
 
 
 class WinPlatformType(BaseStrChoiceEnum):
@@ -38,7 +36,6 @@ class WinPlatformType(BaseStrChoiceEnum):
 
 class FFSourceType(BaseStrChoiceEnum):
     CODEX = 'codex'
-    FFBINARIES = 'ffbinaries'
 
 
 class CodexReleaseType(BaseStrChoiceEnum):

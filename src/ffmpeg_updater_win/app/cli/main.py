@@ -36,11 +36,9 @@ def main(ctx: typer.Context) -> None:
 @typer_app.command()
 def run(  # noqa: PLR0913, PLR0917
     component: UpdaterComponentType = typer.Option(
-        # UpdaterComponentType.ALL,
         UpdaterComponentType.FFMPEG,
         '-c',
         '--component',
-        # help=f'updater components to update, default {UpdaterComponentType.ALL}', # noqa: ERA001
         help=f'Updater components to update; currently, only "{UpdaterComponentType.FFMPEG}" is supported',
     ),
     destination: Path = typer.Option(

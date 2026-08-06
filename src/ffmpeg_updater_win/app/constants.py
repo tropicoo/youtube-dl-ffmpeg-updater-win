@@ -24,13 +24,6 @@ LOG_MAP: Final[dict[LogLevelType, str]] = {
 }
 
 DEF_EXTRACT_PATH: Final[Path] = Path(r'C:\youtube-dl')
-
-EXE_YTDL: Final[str] = 'youtube-dl.exe'
-URL_YTDL: Final[str] = f'https://youtube-dl.org/downloads/latest/{EXE_YTDL}'
-
 FFMPEG_NUM_REGEX: Final[str] = r'^ffmpeg\s+version\s+([\d\.]+)'
-
-CMD_YOUTUBE_DL_UPDATE: Final[str] = '--update'
 CMD_FFMPEG_VERSION_ARG: Final[str] = '-version'
-
 CHUNK_SIZE: Final[int] = 1024 * 1024

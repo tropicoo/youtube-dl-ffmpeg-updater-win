@@ -89,7 +89,7 @@ class BaseFFmpegUpdaterTask(BaseUpdaterTask[BaseCodexFFAPIClient], ABC):
             stdout = await get_stdout(
                 cmd=(bin_path.as_posix(), CMD_FFMPEG_VERSION_ARG), log=self._log
             )
-            panel = Panel(f'[blue]{stdout}', title='Version')
+            panel = Panel(f'[blue]\n{stdout}', title='FFmpeg Version')
             self._log.debug(
                 'Local FFmpeg build version:\n\n{}', render_to_ansi(renderable=panel)
             )
