@@ -19,6 +19,7 @@ from ffmpeg_updater_win.app.enums import (
 )
 from ffmpeg_updater_win.app.log import init_logging
 from ffmpeg_updater_win.app.models.config import UpdaterConfig
+from ffmpeg_updater_win.app.utils import rich_console
 
 typer_app: Final[typer.Typer] = typer.Typer(invoke_without_command=True)
 
@@ -27,7 +28,7 @@ typer_app: Final[typer.Typer] = typer.Typer(invoke_without_command=True)
 def main(ctx: typer.Context) -> None:
     """FFmpeg updater CLI."""
     if ctx.invoked_subcommand is None:
-        typer.echo(BANNER)
+        rich_console.print(BANNER)
         typer.echo(ctx.get_help())
         raise typer.Exit
 
@@ -91,7 +92,7 @@ def run(  # noqa: PLR0913, PLR0917
     )
     init_logging(log_level=updater_config.verbose)
 
-    logger.info('\n{}', BANNER)
+    rich_console.print(BANNER)
     logger.info('Starting main app')
     try:
         asyncio.run(Updater(config=updater_config).run())

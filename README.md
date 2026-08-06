@@ -1,4 +1,4 @@
-## ffmpeg binaries updater for Windows OS
+## ffmpeg binaries updater for Windows
 
 Updates ffmpeg binaries (`ffmpeg.exe`, `ffplay.exe` and `ffprobe.exe`) from 
 Codex FFmpeg builds (https://www.gyan.dev/ffmpeg/builds) with their latest versions.

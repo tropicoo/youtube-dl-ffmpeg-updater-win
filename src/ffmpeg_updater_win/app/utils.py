@@ -5,7 +5,7 @@ import functools
 import re
 from collections.abc import Awaitable
 from io import StringIO
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Final
 from zipfile import ZipFile
 
 from loguru import logger
@@ -17,6 +17,8 @@ from ffmpeg_updater_win.app.exceptions import CommandError
 
 if TYPE_CHECKING:
     from loguru import Logger  # noqa: TC004
+
+rich_console: Final[Console] = Console()
 
 
 def response_to_zip(data: ByteResponse, filename: str | None = None) -> ZipFile:

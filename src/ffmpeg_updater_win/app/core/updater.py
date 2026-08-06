@@ -4,10 +4,10 @@ import asyncio
 
 from loguru import logger
 
+from ffmpeg_updater_win.app.constants import APP_VERSION
 from ffmpeg_updater_win.app.exceptions import UpdaterError
 from ffmpeg_updater_win.app.models.config import UpdaterConfig
 from ffmpeg_updater_win.app.tasks.managers import TaskManager
-from ffmpeg_updater_win.app.version import __version__
 
 
 class Updater:
@@ -16,7 +16,7 @@ class Updater:
     def __init__(self, config: UpdaterConfig) -> None:
         self._log = logger
         self._log.info(
-            'Initializing "{}" version {}', self.__class__.__name__, __version__
+            'Initializing "{}" version {}', self.__class__.__name__, APP_VERSION
         )
         self._conf = config
         self._task_manager = TaskManager(settings=self._conf)

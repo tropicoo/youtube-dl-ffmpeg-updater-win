@@ -1,11 +1,14 @@
 """Constants module."""
 
+from importlib.metadata import version as metadata_version
 from pathlib import Path
 from typing import Final
 
 from ffmpeg_updater_win.app.enums import LogLevelType
 
 APP_NAME: Final[str] = 'ffmpeg-updater-win'
+APP_VERSION: Final[str] = metadata_version(distribution_name=APP_NAME)
+
 WINDOWS_PLATFORM: Final[str] = 'Windows'
 
 LOG_FORMAT_DEBUG: Final[str] = (

@@ -1,21 +1,24 @@
 import platform
 
 import typer
-from rich import print as rich_print
 from rich.panel import Panel
 
-from ffmpeg_updater_win.app.constants import APP_NAME, WINDOWS_PLATFORM
+from ffmpeg_updater_win.app.constants import (
+    APP_NAME,
+    APP_VERSION,
+    WINDOWS_PLATFORM,
+)
 from ffmpeg_updater_win.app.enums import ExitCodeType
-from ffmpeg_updater_win.app.version import __version__
+from ffmpeg_updater_win.app.utils import rich_console
 
 
 def abort_on_non_windows() -> None:
     system = platform.system()
     if system != WINDOWS_PLATFORM:
-        rich_print(
+        rich_console.print(
             Panel(
                 f'[red]Unsupported system: {system}',
-                title=f'{APP_NAME} {__version__}',
+                title=f'{APP_NAME} {APP_VERSION}',
                 border_style='red',
             )
         )
