@@ -5,7 +5,7 @@ from typing import ClassVar
 
 from loguru import logger
 
-from ffmpeg_updater_win.app.clients.abstract import BaseApiClient
+from ffmpeg_updater_win.app.clients.abstract import BaseAPIClient
 from ffmpeg_updater_win.app.enums import UpdaterComponentType
 from ffmpeg_updater_win.app.mappings import get_api_cls
 from ffmpeg_updater_win.app.models.config import UpdaterConfig
@@ -16,9 +16,7 @@ from ffmpeg_updater_win.app.utils import create_task
 
 class TaskManager:
     TASKS: ClassVar[dict[UpdaterComponentType, tuple[type[BaseUpdaterTask], ...]]] = {
-        # UpdaterComponentType.ALL: (CodexFfmpegUpdaterTask, YTDLUpdaterTask),
         UpdaterComponentType.FFMPEG: (CodexFfmpegUpdaterTask,),
-        # UpdaterComponentType.YTDL: (YTDLUpdaterTask,),
     }
 
     def __init__(self, settings: UpdaterConfig) -> None:
@@ -43,5 +41,5 @@ class TaskManager:
             )
         return tasks
 
-    def _create_api_client(self, task_cls: type[BaseUpdaterTask]) -> BaseApiClient:
+    def _create_api_client(self, task_cls: type[BaseUpdaterTask]) -> BaseAPIClient:
         return get_api_cls(settings=self._settings, updater_task_cls=task_cls)()

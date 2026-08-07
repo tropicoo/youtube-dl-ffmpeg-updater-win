@@ -5,4 +5,4 @@ from ffmpeg_updater_win.main import main
 
 __version__: Final[str] = APP_VERSION
 
-__all__: Final[str] = ['__version__', 'main']
+__all__: Final[list[str]] = ['__version__', 'main']

@@ -3,7 +3,7 @@
 import asyncio
 import functools
 import re
-from collections.abc import Awaitable
+from collections.abc import Coroutine
 from io import StringIO
 from typing import TYPE_CHECKING, Any, Final
 from zipfile import ZipFile
@@ -82,13 +82,13 @@ async def get_stdout(
 
 
 def create_task[T](  # noqa: PLR0913
-    coroutine: Awaitable[T],
+    coroutine: Coroutine[Any, Any, T],
     *,
     log: Logger,
     task_name: str | None = None,
     exception_message: str = 'Task raised an exception',
     exception_message_args: tuple[Any, ...] = (),
-    loop: asyncio.BaseEventLoop | None = None,
+    loop: asyncio.AbstractEventLoop | None = None,
 ) -> asyncio.Task[T]:
     if loop is None:
         loop = asyncio.get_running_loop()

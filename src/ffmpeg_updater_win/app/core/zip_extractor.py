@@ -47,7 +47,7 @@ class ZipStreamExtractor:
                 break
 
         await asyncio.gather(*self._validation_tasks)
-        self._log.info('All ffbinaries updated, zip stream process done')
+        self._log.info('All FFmpeg binaries updated, zip stream process done')
 
     async def _write_file(self, filename: str, unzipped_chunks) -> None:  # noqa: ANN001
         """Write unzipped chunks into file."""

@@ -6,15 +6,17 @@ from typing import ClassVar
 from loguru import logger
 from rich.panel import Panel
 
-from ffmpeg_updater_win.app.clients.abstract import BaseApiClient
-from ffmpeg_updater_win.app.clients.codex_ffmpeg.client import BaseCodexFFAPIClient
+from ffmpeg_updater_win.app.clients.abstract import BaseAPIClient
+from ffmpeg_updater_win.app.clients.codex_ffmpeg.clients.abstract import (
+    BaseCodexFFAPIClient,
+)
 from ffmpeg_updater_win.app.constants import CMD_FFMPEG_VERSION_ARG, FFMPEG_NUM_REGEX
 from ffmpeg_updater_win.app.enums import FFSourceType, RequiredFfbinaryType
 from ffmpeg_updater_win.app.models.config import UpdaterConfig
 from ffmpeg_updater_win.app.utils import get_stdout, render_to_ansi
 
 
-class BaseUpdaterTask[T: BaseApiClient](ABC):
+class BaseUpdaterTask[T: BaseAPIClient](ABC):
     def __init__(self, api_client: T, settings: UpdaterConfig) -> None:
         self._log = logger
         self._log.debug('Initializing "{}"', self.__class__.__name__)

@@ -7,7 +7,7 @@ from aiohttp import ClientSession, TCPConnector
 from loguru import logger
 
 
-class BaseApiClient(ABC):
+class BaseAPIClient(ABC):
     def __init__(self) -> None:
         self._log = logger
         self._log.debug('Initializing "{}"', self.__class__.__name__)
@@ -27,5 +27,5 @@ class BaseApiClient(ABC):
         await self._session.close()
 
     @abstractmethod
-    async def download_latest_version(self) -> Any:
+    async def download_latest_version(self, *args, **kwargs) -> Any:
         pass
